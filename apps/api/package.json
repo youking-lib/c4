@@ -1,0 +1,30 @@
+{
+  "name": "cyber-api",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Cyber API",
+  "main": "index.js",
+  "scripts": {
+    "prisma": "prisma generate",
+    "types": "wrangler types --env-interface CloudflareBindings"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@clerk/backend": "^1.21.6",
+    "@hono/clerk-auth": "^2.0.0",
+    "@hono/node-server": "^1.13.7",
+    "@hono/zod-openapi": "^0.18.3",
+    "@prisma/adapter-d1": "^6.2.1",
+    "@prisma/client": "^6.2.1",
+    "hono": "^4.6.16",
+    "zod": "^3.24.1",
+    "zod-prisma": "^0.5.4"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250109.0",
+    "prisma": "^6.2.1",
+    "wrangler": "^3.100.0"
+  }
+}
