@@ -4,10 +4,10 @@ import { createClerkClient } from "@clerk/backend";
 import { Env } from "./interface";
 import { prismaClients } from "./prisma";
 
-export type AdapterContext = Context<Env>;
+export type HonoAPIContext = Context<Env>;
 
-export class Adapter {
-  constructor(public ctx: AdapterContext) {}
+export class APIContext {
+  constructor(public ctx: HonoAPIContext) {}
 
   async getEnv() {
     return this.ctx.env;
@@ -18,33 +18,33 @@ export class Adapter {
     return prisma;
   }
 
-  async getClerkOptions() {
-    const env = await this.getEnv();
-
-    return {
-      jwtKey: env.CLERK_JWT_KEY,
-      secretKey: env.CLERK_SECRET_KEY,
-      publishableKey: env.CLERK_PUBLISHABLE_KEY,
-    };
-  }
-
-  async getClerkSession() {
-    const client = await this.getClerkClient();
-    const options = await this.getClerkOptions();
-
-    const res = await client.authenticateRequest(this.ctx.req.raw, {
-      ...options,
-    });
-
-    if (res.status === "signed-in") {
-      return res.toAuth();
-    }
-
-    return null;
-  }
-
   async getClerkClient() {
-    const options = await this.getClerkOptions();
+    const options = await getClerkOptions(this);
     return createClerkClient(options);
   }
+}
+
+export async function getClerkOptions(api: APIContext) {
+  const env = await api.getEnv();
+
+  return {
+    jwtKey: env.CLERK_JWT_KEY,
+    secretKey: env.CLERK_SECRET_KEY,
+    publishableKey: env.CLERK_PUBLISHABLE_KEY,
+  };
+}
+
+export async function getClerkSession(api: APIContext) {
+  const options = await getClerkOptions(api);
+  const client = await api.getClerkClient();
+
+  const res = await client.authenticateRequest(api.ctx.req.raw, {
+    ...options,
+  });
+
+  if (res.status === "signed-in") {
+    return res.toAuth();
+  }
+
+  return null;
 }

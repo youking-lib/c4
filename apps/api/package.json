@@ -1,7 +1,6 @@
 {
   "name": "cyber-api",
   "private": true,
-  "version": "1.0.0",
   "description": "Cyber API",
   "main": "index.js",
   "scripts": {

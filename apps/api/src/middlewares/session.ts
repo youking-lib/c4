@@ -1,13 +1,13 @@
 import { MiddlewareHandler } from "hono";
 
 import type { Env } from "@/ctx/interface";
-import { Adapter } from "@/ctx/adapter";
+import { APIContext, getClerkSession } from "@/ctx/adapter";
 
 export const jwt = (): MiddlewareHandler<Env> => {
   return async (c, next) => {
-    const adapter = new Adapter(c);
+    const api = new APIContext(c);
 
-    const session = await adapter.getClerkSession();
+    const session = await getClerkSession(api);
 
     if (!session) {
       return c.json({ error: "Unauthorized" }, 401);
