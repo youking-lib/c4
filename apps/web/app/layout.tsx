@@ -29,7 +29,7 @@ export default function RootLayout({
         <Theme
           data-is-root-theme="false"
           data-has-background="false"
-          accentColor="gray"
+          accentColor="purple"
           grayColor="mauve"
         >
           {children}
