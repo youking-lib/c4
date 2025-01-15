@@ -33,7 +33,10 @@ export default function Home() {
         transition={{ duration: 0.5, delay: 0.2 }}
       >
         <Flex direction="column" gap="8" align="center">
-          <div>
+          <div className="text-2xl font-bold">赛博取件码，畅享极致的文件传输体验！</div>
+
+          <div className="flex items-center gap-2">
+            取件码：
             <RetrieveOTP
               value={state.code}
               onComplete={() => {

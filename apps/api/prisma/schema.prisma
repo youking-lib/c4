@@ -19,8 +19,86 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id String @id @default(cuid())
-  email String @unique
+model Project {
+  id   String @id @default(cuid())
   name String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  owner   User   @relation("Owner", fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId String @unique
+
+  codes    Code[]
+  File     File[]
+  Partners User[] @relation("Partners")
+}
+
+model User {
+  id     String  @id @default(cuid())
+  email  String  @unique
+  name   String
+  avatar String?
+
+  defaultProjectId String   @unique
+  defaultProject   Project? @relation("Owner")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Code     Code[]
+  Projects Project[] @relation("Partners")
+  File     File[]
+}
+
+model File {
+  id     String @id @default(cuid())
+  name   String
+  size   Int
+  type   String
+  status String @default("pending")
+
+  key  String // s3 path
+  hash String // sha256 hash
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // stats
+  downloads        Int       @default(0)
+  lastDownloadedAt DateTime?
+
+  // related
+  project   Project? @relation(fields: [projectId], references: [id])
+  projectId String?
+
+  owner   User?   @relation(fields: [ownerId], references: [id])
+  ownerId String?
+
+  code   Code?   @relation(fields: [codeId], references: [id])
+  codeId String?
+}
+
+model Code {
+  id   String @id @default(cuid())
+  code String
+
+  slug String? @unique
+
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // stats
+  retrieves       Int       @default(0)
+  lastRetrievedAt DateTime?
+
+  // related
+  files File[]
+
+  owner   User?   @relation(fields: [ownerId], references: [id])
+  ownerId String?
+
+  Project   Project? @relation(fields: [projectId], references: [id])
+  projectId String?
 }

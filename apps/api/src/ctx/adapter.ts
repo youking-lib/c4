@@ -1,8 +1,10 @@
-import { Context } from "hono";
-import { createClerkClient } from "@clerk/backend";
+import { Context } from 'hono';
+import { createClerkClient } from '@clerk/backend';
 
-import { Env } from "./interface";
-import { prismaClients } from "./prisma";
+import { getS3Client } from '@/libs/storage';
+
+import { Env } from './interface';
+import { prismaClients } from './prisma';
 
 export type HonoAPIContext = Context<Env>;
 
@@ -18,6 +20,16 @@ export class APIContext {
     return prisma;
   }
 
+  async getS3Client() {
+    const env = await this.getEnv();
+
+    return getS3Client({
+      endpoint: env.S3_ENDPOINT,
+      accessKeyId: env.S3_ACCESS_KEY_ID,
+      secretAccessKey: env.S3_SECRET_ACCESS_KEY
+    });
+  }
+
   async getClerkClient() {
     const options = await getClerkOptions(this);
     return createClerkClient(options);
@@ -30,7 +42,7 @@ export async function getClerkOptions(api: APIContext) {
   return {
     jwtKey: env.CLERK_JWT_KEY,
     secretKey: env.CLERK_SECRET_KEY,
-    publishableKey: env.CLERK_PUBLISHABLE_KEY,
+    publishableKey: env.CLERK_PUBLISHABLE_KEY
   };
 }
 
@@ -39,10 +51,10 @@ export async function getClerkSession(api: APIContext) {
   const client = await api.getClerkClient();
 
   const res = await client.authenticateRequest(api.ctx.req.raw, {
-    ...options,
+    ...options
   });
 
-  if (res.status === "signed-in") {
+  if (res.status === 'signed-in') {
     return res.toAuth();
   }
 
