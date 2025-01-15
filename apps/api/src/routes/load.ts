@@ -1,7 +1,8 @@
-import { uploadPreHash, uploadPreSign } from '@/libs/file';
-import { route } from './api';
-import { uploadCheckRoute } from './upload.schema';
 import { APIContext } from '@/ctx/adapter';
+import { getDownloadUrl, uploadPreHash, uploadPreSign } from '@/libs/file';
+
+import { route } from './api';
+import { downloadRoute, uploadCheckRoute } from './load.schema';
 
 route.openapi(uploadCheckRoute, async c => {
   const api = new APIContext(c);
@@ -20,4 +21,12 @@ route.openapi(uploadCheckRoute, async c => {
   const { key, preSignedUrl } = await uploadPreSign(api, { filename });
 
   return c.json({ key, preSignedUrl }, 200);
+});
+
+route.openapi(downloadRoute, async c => {
+  const api = new APIContext(c);
+  const { fileId } = c.req.param();
+  const downloadUrl = await getDownloadUrl(api, fileId);
+
+  return c.json({ downloadUrl }, 200);
 });

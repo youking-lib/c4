@@ -94,7 +94,7 @@ model File {
 
 model Code {
   id   String @id @default(cuid())
-  code String
+  code String @unique
 
   slug String? @unique
 

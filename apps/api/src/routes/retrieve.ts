@@ -1,17 +1,13 @@
-import { createRoute, z } from '@hono/zod-openapi';
+import { APIContext } from '@/ctx/adapter';
+import { retrieveCodeFiles } from '@/libs/file';
 
-export const retrieveRoute = createRoute({
-  tags: ['retrieve'],
-  method: 'post',
-  path: '/retrieve',
-  request: {
-    query: z.object({
-      code: z.string()
-    })
-  },
-  responses: {
-    200: {
-      description: 'Retrieve code successful'
-    }
-  }
+import { route } from './api';
+import { retrieveRoute } from './retrieve.schema';
+
+route.openapi(retrieveRoute, async c => {
+  const api = new APIContext(c);
+  const { code } = c.req.query();
+  const codeFiles = await retrieveCodeFiles(api, code);
+
+  return c.json({ files: codeFiles.files }, 200);
 });

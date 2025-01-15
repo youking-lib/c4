@@ -35,8 +35,5 @@ export async function getPreSignedPutUrl(client: S3Client, bucket: string, key: 
     { expiresIn: 3600 }
   );
 
-  return {
-    key,
-    preSignedUrl
-  };
+  return preSignedUrl;
 }

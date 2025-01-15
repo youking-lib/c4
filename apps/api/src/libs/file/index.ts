@@ -74,6 +74,24 @@ export async function uploadPreSign(
   };
 }
 
+export async function retrieveCodeFiles(api: APIContext, code: string) {
+  const prisma = await api.getPrismaClient();
+  const result = await prisma.code.findUnique({
+    where: {
+      code
+    },
+    include: {
+      files: true
+    }
+  });
+
+  if (!result) {
+    throw new Error('Code not found');
+  }
+
+  return result;
+}
+
 export async function getPreSignedUrl(api: APIContext, key: string) {
   const client = await api.getS3Client();
   const env = await api.getEnv();
