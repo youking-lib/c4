@@ -1,6 +1,9 @@
 export type Session = {
   userId: string;
-  sessionId: string;
+  username: string;
+
+  projectId: string;
+  projectName: string;
 };
 
 export type Env = {

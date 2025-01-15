@@ -11,6 +11,10 @@ export type HonoAPIContext = Context<Env>;
 export class APIContext {
   constructor(public ctx: HonoAPIContext) {}
 
+  async getSession() {
+    return this.ctx.get('session');
+  }
+
   async getEnv() {
     return this.ctx.env;
   }

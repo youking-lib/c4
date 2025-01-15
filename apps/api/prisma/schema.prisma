@@ -32,6 +32,9 @@ model Project {
   codes    Code[]
   File     File[]
   Partners User[] @relation("Partners")
+
+  @@index([id])
+  @@index([ownerId])
 }
 
 model User {
@@ -40,23 +43,25 @@ model User {
   name   String
   avatar String?
 
-  defaultProjectId String   @unique
-  defaultProject   Project? @relation("Owner")
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   Code     Code[]
   Projects Project[] @relation("Partners")
   File     File[]
+
+  defaultProject Project? @relation("Owner")
+
+  @@index([id])
+  @@index([email])
 }
 
 model File {
-  id     String @id @default(cuid())
-  name   String
-  size   Int
-  type   String
-  status String @default("pending")
+  id       String  @id @default(cuid())
+  name     String
+  size     Int
+  type     String
+  disabled Boolean @default(false)
 
   key  String // s3 path
   hash String // sha256 hash
@@ -77,6 +82,14 @@ model File {
 
   code   Code?   @relation(fields: [codeId], references: [id])
   codeId String?
+
+  @@index([id])
+  @@index([ownerId])
+  @@index([projectId])
+  @@index([codeId])
+  @@index([hash])
+  @@index([name])
+  @@index([disabled])
 }
 
 model Code {
@@ -101,4 +114,10 @@ model Code {
 
   Project   Project? @relation(fields: [projectId], references: [id])
   projectId String?
+
+  @@index([id])
+  @@index([ownerId])
+  @@index([projectId])
+  @@index([slug])
+  @@index([code])
 }

@@ -6,7 +6,7 @@ export const FileModel = z.object({
   name: z.string(),
   size: z.number().int(),
   type: z.string(),
-  status: z.string(),
+  disabled: z.boolean(),
   key: z.string(),
   hash: z.string(),
   createdAt: z.date(),

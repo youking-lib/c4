@@ -1,12 +1,23 @@
-import { createRoute } from '@hono/zod-openapi';
+import { uploadPreHash, uploadPreSign } from '@/libs/file';
+import { route } from './api';
+import { uploadCheckRoute } from './upload.schema';
+import { APIContext } from '@/ctx/adapter';
 
-export const uploadRoute = createRoute({
-  tags: ['upload'],
-  method: 'post',
-  path: '/upload',
-  responses: {
-    200: {
-      description: 'Upload successful'
-    }
+route.openapi(uploadCheckRoute, async c => {
+  const api = new APIContext(c);
+  const { filename, type, size, hash } = await c.req.json();
+  const file = await uploadPreHash(api, { filename, type, size, hash });
+
+  if (file) {
+    return c.json(
+      {
+        file
+      },
+      200
+    );
   }
+
+  const { key, preSignedUrl } = await uploadPreSign(api, { filename });
+
+  return c.json({ key, preSignedUrl }, 200);
 });
