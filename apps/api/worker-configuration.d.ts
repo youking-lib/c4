@@ -10,5 +10,8 @@ interface CloudflareBindings {
 	S3_BUCKET_NAME: string;
 	S3_SECRET_ACCESS_KEY: string;
 	S3_ENDPOINT: string;
+	NEXT_PUBLIC_STACK_PROJECT_ID: string;
+	NEXT_PUBLIC_STACK_PUBLISHABLE_CLIENT_KEY: string;
+	STACK_SECRET_SERVER_KEY: string;
 	database: D1Database;
 }

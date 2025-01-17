@@ -2,12 +2,13 @@ import { APIContext } from '@/ctx/adapter';
 import { retrieveCodeFiles } from '@/libs/file';
 
 import { route } from './api';
-import { retrieveRoute } from './retrieve.schema';
+import { codeSchema } from './code.schema';
 
-route.openapi(retrieveRoute, async c => {
+route.openapi(codeSchema.retrieveRoute, async c => {
   const api = new APIContext(c);
-  const { code } = c.req.query();
-  const codeFiles = await retrieveCodeFiles(api, code);
+  const { projectId, codeId } = c.req.param();
+
+  const codeFiles = await retrieveCodeFiles(api, codeId);
 
   return c.json({ files: codeFiles.files }, 200);
 });

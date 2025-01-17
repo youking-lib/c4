@@ -3,7 +3,7 @@ import { MiddlewareHandler } from 'hono';
 import type { Env } from '@/ctx/interface';
 import { APIContext, getClerkSession } from '@/ctx/adapter';
 
-export const jwt = (): MiddlewareHandler<Env> => {
+export const useJwtSession = (): MiddlewareHandler<Env> => {
   return async (c, next) => {
     const api = new APIContext(c);
 
@@ -49,13 +49,13 @@ export async function getOrCreateUserByClerk(api: APIContext, userId: string) {
     },
     update: {
       avatar: clerkUser.imageUrl,
-      name: clerkUser.firstName + ' ' + clerkUser.lastName,
+      name: clerkUser.username!,
       email: clerkUser.emailAddresses[0].emailAddress
     },
     create: {
       id: clerkUser.id,
       email: clerkUser.emailAddresses[0].emailAddress,
-      name: clerkUser.firstName + ' ' + clerkUser.lastName,
+      name: clerkUser.username!,
       avatar: clerkUser.imageUrl,
       defaultProject: {
         create: {
