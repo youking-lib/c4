@@ -2,14 +2,6 @@ import { APIContext } from '@/ctx/adapter';
 import { route } from './api';
 import { authSchema } from './auth.schema';
 
-route.openapi(authSchema.login, async c => {
-  const api = new APIContext(c);
-
-  api.getClerkClient();
-
-  return c.json({ status: 'success', token: '123' } as const, 200);
-});
-
 route.openapi(authSchema.sendOTPCode, async c => {
   const api = new APIContext(c);
 
