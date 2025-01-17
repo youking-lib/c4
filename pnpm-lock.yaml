@@ -237,6 +237,9 @@ importers:
       '@clack/prompts':
         specifier: ^0.9.1
         version: 0.9.1
+      '@cyber-express/client':
+        specifier: workspace:*
+        version: link:../api-client
       cac:
         specifier: ^6.7.14
         version: 6.7.14
@@ -249,6 +252,9 @@ importers:
       yaml:
         specifier: ^2.7.0
         version: 2.7.0
+      zod:
+        specifier: ^3.24.1
+        version: 3.24.1
     devDependencies:
       '@types/js-yaml':
         specifier: ^4.0.9

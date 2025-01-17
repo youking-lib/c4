@@ -87,36 +87,6 @@ export async function getOrInitUserTeam(api: APIContext, id: string) {
     userId: id
   });
 
-  console.log(
-    JSON.stringify(
-      {
-        where: {
-          id: id
-        },
-        update: {
-          avatar: stackUser.data.profile_image_url,
-          name: stackUser.data.display_name || 'Unnamed',
-          email: stackUser.data.primary_email!
-        },
-        create: {
-          id: id,
-          email: stackUser.data.primary_email!,
-          name: stackUser.data.display_name || 'Unnamed',
-          avatar: stackUser.data.profile_image_url,
-          defaultProject: {
-            create: {
-              id: teams[0]!.id,
-              name: teams[0]!.display_name || 'Unnamed'
-            }
-          }
-        },
-        include
-      },
-      null,
-      2
-    )
-  );
-
   const user = await prisma.user.upsert({
     where: {
       id: id
