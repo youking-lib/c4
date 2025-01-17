@@ -3,17 +3,12 @@ import * as jose from 'jose';
 
 import type { Env } from '@/ctx/interface';
 import { APIContext } from '@/ctx/adapter';
+import { Prisma } from '@prisma/client';
 
 export const useJwtSession = (options: { whitelist: string[] }): MiddlewareHandler<Env> => {
   return async (c, next) => {
     const api = new APIContext(c);
     const env = await api.getEnv();
-
-    console.log(
-      c.req.path,
-      options.whitelist,
-      options.whitelist.some(path => c.req.path.startsWith(path))
-    );
 
     if (options.whitelist.some(path => c.req.path.startsWith(path))) {
       return next();
@@ -40,21 +35,18 @@ export const useJwtSession = (options: { whitelist: string[] }): MiddlewareHandl
       return c.json({ error: 'Unauthorized' }, 401);
     }
 
-    const stack = await api.getStackServerClient();
-    const user = await stack.getServerUserById(valid.payload.sub);
+    const user = await getOrInitUserTeam(api, valid.payload.sub);
 
-    if (user.status !== 'ok') {
+    if (!user) {
       return c.json({ error: 'Unauthorized, user not found' }, 401);
     }
 
-    const team = await getOrInitUserTeam(api, user.data.id);
-
     c.set('session', {
-      uid: user.data.id,
-      name: user.data.display_name!,
-      email: user.data.primary_email!,
-      projectId: team?.id!,
-      projectName: team?.display_name!
+      uid: user.id,
+      name: user.name,
+      email: user.email,
+      projectId: user.defaultProject?.id!,
+      projectName: user.defaultProject?.name!
     });
 
     return next();
@@ -62,10 +54,92 @@ export const useJwtSession = (options: { whitelist: string[] }): MiddlewareHandl
 };
 
 export async function getOrInitUserTeam(api: APIContext, id: string) {
+  const prisma = await api.getPrismaClient();
+
+  const include: Prisma.UserInclude = {
+    defaultProject: {
+      select: {
+        name: true,
+        id: true
+      }
+    }
+  };
+
+  const existingUser = await prisma.user.findUnique({
+    where: {
+      id
+    },
+    include
+  });
+
+  if (existingUser) {
+    return existingUser;
+  }
+
   const stack = await api.getStackServerClient();
+  const stackUser = await stack.getServerUserById(id);
+
+  if (stackUser.status !== 'ok') {
+    return null;
+  }
+
   const teams = await stack.listServerTeams({
     userId: id
   });
 
-  return teams[0]!;
+  console.log(
+    JSON.stringify(
+      {
+        where: {
+          id: id
+        },
+        update: {
+          avatar: stackUser.data.profile_image_url,
+          name: stackUser.data.display_name || 'Unnamed',
+          email: stackUser.data.primary_email!
+        },
+        create: {
+          id: id,
+          email: stackUser.data.primary_email!,
+          name: stackUser.data.display_name || 'Unnamed',
+          avatar: stackUser.data.profile_image_url,
+          defaultProject: {
+            create: {
+              id: teams[0]!.id,
+              name: teams[0]!.display_name || 'Unnamed'
+            }
+          }
+        },
+        include
+      },
+      null,
+      2
+    )
+  );
+
+  const user = await prisma.user.upsert({
+    where: {
+      id: id
+    },
+    update: {
+      avatar: stackUser.data.profile_image_url,
+      name: stackUser.data.display_name || 'Unnamed',
+      email: stackUser.data.primary_email!
+    },
+    create: {
+      id: id,
+      email: stackUser.data.primary_email!,
+      name: stackUser.data.display_name || 'Unnamed',
+      avatar: stackUser.data.profile_image_url,
+      defaultProject: {
+        create: {
+          id: teams[0]!.id,
+          name: teams[0]!.display_name || 'Unnamed'
+        }
+      }
+    },
+    include
+  });
+
+  return user;
 }

@@ -14,7 +14,6 @@ CREATE TABLE "User" (
     "email" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "avatar" TEXT,
-    "defaultProjectId" TEXT NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL
 );
@@ -77,13 +76,7 @@ CREATE INDEX "Project_ownerId_idx" ON "Project"("ownerId");
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_defaultProjectId_key" ON "User"("defaultProjectId");
-
--- CreateIndex
 CREATE INDEX "User_id_idx" ON "User"("id");
-
--- CreateIndex
-CREATE INDEX "User_defaultProjectId_idx" ON "User"("defaultProjectId");
 
 -- CreateIndex
 CREATE INDEX "User_email_idx" ON "User"("email");
@@ -108,6 +101,9 @@ CREATE INDEX "File_name_idx" ON "File"("name");
 
 -- CreateIndex
 CREATE INDEX "File_disabled_idx" ON "File"("disabled");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Code_code_key" ON "Code"("code");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Code_slug_key" ON "Code"("slug");
