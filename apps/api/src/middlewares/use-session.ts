@@ -1,77 +1,71 @@
 import { MiddlewareHandler } from 'hono';
+import * as jose from 'jose';
 
 import type { Env } from '@/ctx/interface';
-import { APIContext, getClerkSession } from '@/ctx/adapter';
+import { APIContext } from '@/ctx/adapter';
 
-export const useJwtSession = (): MiddlewareHandler<Env> => {
+export const useJwtSession = (options: { whitelist: string[] }): MiddlewareHandler<Env> => {
   return async (c, next) => {
     const api = new APIContext(c);
+    const env = await api.getEnv();
 
-    const session = await getClerkSession(api);
-    const client = await api.getClerkClient();
+    console.log(
+      c.req.path,
+      options.whitelist,
+      options.whitelist.some(path => c.req.path.startsWith(path))
+    );
 
-    if (!session) {
+    if (options.whitelist.some(path => c.req.path.startsWith(path))) {
+      return next();
+    }
+
+    const jwks = jose.createRemoteJWKSet(
+      new URL(
+        `https://api.stack-auth.com/api/v1/projects/${env.NEXT_PUBLIC_STACK_PROJECT_ID}/.well-known/jwks.json`
+      )
+    );
+
+    const token = c.req.header('Authorization')?.split(' ')[1] || '';
+
+    const valid = await jose
+      .jwtVerify(token, jwks, {
+        algorithms: ['ES256']
+      })
+      .catch(err => {
+        console.error(err);
+        return null;
+      });
+
+    if (!valid || !valid.payload.sub) {
       return c.json({ error: 'Unauthorized' }, 401);
     }
 
-    const clerkUser = await client.users.getUser(session.userId);
+    const stack = await api.getStackServerClient();
+    const user = await stack.getServerUserById(valid.payload.sub);
 
-    if (!clerkUser) {
+    if (user.status !== 'ok') {
       return c.json({ error: 'Unauthorized, user not found' }, 401);
     }
 
-    const user = await getOrCreateUserByClerk(api, clerkUser.id);
-    const porject = user.defaultProject!;
+    const team = await getOrInitUserTeam(api, user.data.id);
 
     c.set('session', {
-      userId: user.id,
-      username: user.name,
-      projectId: porject.id,
-      projectName: porject.name
+      uid: user.data.id,
+      name: user.data.display_name!,
+      email: user.data.primary_email!,
+      projectId: team?.id!,
+      projectName: team?.display_name!
     });
 
-    await next();
+    return next();
   };
 };
 
-export async function getOrCreateUserByClerk(api: APIContext, userId: string) {
-  const prisma = await api.getPrismaClient();
-  const client = await api.getClerkClient();
-  const clerkUser = await client.users.getUser(userId);
-
-  if (!clerkUser) {
-    throw new Error('User not found');
-  }
-
-  const user = await prisma.user.upsert({
-    where: {
-      id: clerkUser.id
-    },
-    update: {
-      avatar: clerkUser.imageUrl,
-      name: clerkUser.username!,
-      email: clerkUser.emailAddresses[0].emailAddress
-    },
-    create: {
-      id: clerkUser.id,
-      email: clerkUser.emailAddresses[0].emailAddress,
-      name: clerkUser.username!,
-      avatar: clerkUser.imageUrl,
-      defaultProject: {
-        create: {
-          name: 'Default Project'
-        }
-      }
-    },
-    include: {
-      defaultProject: {
-        select: {
-          name: true,
-          id: true
-        }
-      }
-    }
+export async function getOrInitUserTeam(api: APIContext, id: string) {
+  const stack = await api.getStackServerClient();
+  const teams = await stack.listServerTeams({
+    userId: id
   });
 
-  return user;
+  return teams[0]!;
 }

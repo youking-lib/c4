@@ -14,7 +14,6 @@ export function success<T extends z.ZodTypeAny>(data: T) {
             )
           : result
       }
-    },
-    description: 'verify otp code successful'
+    }
   };
 }

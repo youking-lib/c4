@@ -37,6 +37,18 @@ export const authSchema = {
     }
   }),
 
+  loginUser: createRoute({
+    tags: ['auth'],
+    method: 'post',
+    path: '/auth/user',
+    responses: {
+      200: {
+        ...success(z.null()),
+        description: 'Login successful'
+      }
+    }
+  }),
+
   sendOTPCode: createRoute({
     tags: ['auth'],
     method: 'post',
@@ -79,7 +91,9 @@ export const authSchema = {
     },
     responses: {
       200: {
-        ...success(z.null()),
+        ...success(
+          z.object({ accessToken: z.string(), refreshToken: z.string(), newUser: z.boolean() })
+        ),
         description: 'verify otp code successful'
       }
     }

@@ -2,6 +2,12 @@ import { APIContext } from '@/ctx/adapter';
 import { route } from './api';
 import { authSchema } from './auth.schema';
 
+route.openapi(authSchema.loginUser, async c => {
+  const session = c.get('session');
+
+  return c.json({ status: 'success', data: session } as const, 200);
+});
+
 route.openapi(authSchema.sendOTPCode, async c => {
   const api = new APIContext(c);
 
@@ -32,7 +38,11 @@ route.openapi(authSchema.verifyOTPCode, async c => {
   return c.json(
     {
       status: 'success',
-      data: null
+      data: {
+        accessToken: res.data.accessToken,
+        refreshToken: res.data.refreshToken,
+        newUser: res.data.newUser
+      }
     } as const,
     200
   );

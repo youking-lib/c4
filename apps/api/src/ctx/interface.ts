@@ -1,6 +1,7 @@
 export type Session = {
-  userId: string;
-  username: string;
+  uid: string;
+  name: string;
+  email: string;
 
   projectId: string;
   projectName: string;

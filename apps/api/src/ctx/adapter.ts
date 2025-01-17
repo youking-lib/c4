@@ -1,6 +1,5 @@
 import { Context } from 'hono';
 import { createClerkClient } from '@clerk/backend';
-import { StackServerApp } from '@stackframe/stack';
 import { StackServerInterface } from '@stackframe/stack-shared';
 import { getS3Client } from '@/libs/storage';
 
@@ -41,17 +40,6 @@ export class APIContext {
     return new StackServerInterface({
       clientVersion: 'js @stackframe/stack@2.7.5',
       baseUrl: 'https://api.stack-auth.com',
-      projectId: env.NEXT_PUBLIC_STACK_PROJECT_ID,
-      publishableClientKey: env.NEXT_PUBLIC_STACK_PUBLISHABLE_CLIENT_KEY,
-      secretServerKey: env.STACK_SECRET_SERVER_KEY
-    });
-  }
-
-  async getStackClient() {
-    const env = await this.getEnv();
-
-    return new StackServerApp({
-      tokenStore: 'memory',
       projectId: env.NEXT_PUBLIC_STACK_PROJECT_ID,
       publishableClientKey: env.NEXT_PUBLIC_STACK_PUBLISHABLE_CLIENT_KEY,
       secretServerKey: env.STACK_SECRET_SERVER_KEY
