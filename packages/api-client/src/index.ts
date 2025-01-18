@@ -14,9 +14,11 @@ export function createClient({
   token: string;
 }) {
   const http = new HttpClient({
-    baseURL: baseUrl,
-    headers: {
-      Authorization: `Bearer ${token}`
+    baseUrl,
+    baseApiParams: {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
     }
   });
 

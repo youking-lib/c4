@@ -30,6 +30,7 @@ export class File<SecurityDataType = unknown> {
    * @name ProjectFileUploadCheckCreate
    * @request POST:/api/project/{projectId}/file/upload/check
    * @secure
+   * @response `200` `ProjectFileUploadCheckCreateData` Upload successful
    */
   projectFileUploadCheckCreate = (
     projectId: string,
@@ -52,6 +53,7 @@ export class File<SecurityDataType = unknown> {
    * @name ProjectFileDownloadDetail
    * @request GET:/api/project/{projectId}/file/download/{fileId}
    * @secure
+   * @response `200` `ProjectFileDownloadDetailData` Download successful
    */
   projectFileDownloadDetail = (projectId: string, fileId: string, params: RequestParams = {}) =>
     this.http.request<ProjectFileDownloadDetailData, any>({

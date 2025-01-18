@@ -1,5 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi';
-import { success } from './utils';
+import { errorSchema, successSchema } from './utils';
 
 export const authSchema = {
   login: createRoute({
@@ -18,8 +18,9 @@ export const authSchema = {
       }
     },
     responses: {
+      ...errorSchema,
       200: {
-        ...success(z.null()),
+        ...successSchema(z.null()),
         description: 'Login successful'
       }
     }
@@ -30,8 +31,9 @@ export const authSchema = {
     method: 'post',
     path: '/logout',
     responses: {
+      ...errorSchema,
       200: {
-        ...success(z.null()),
+        ...successSchema(z.null()),
         description: 'Logout successful'
       }
     }
@@ -42,8 +44,9 @@ export const authSchema = {
     method: 'post',
     path: '/auth/user',
     responses: {
+      ...errorSchema,
       200: {
-        ...success(z.null()),
+        ...successSchema(z.null()),
         description: 'Login successful'
       }
     }
@@ -66,8 +69,9 @@ export const authSchema = {
       }
     },
     responses: {
+      ...errorSchema,
       200: {
-        ...success(z.object({ nonce: z.string() })),
+        ...successSchema(z.object({ nonce: z.string() })),
         description: 'send otp code successful'
       }
     }
@@ -90,8 +94,9 @@ export const authSchema = {
       }
     },
     responses: {
+      ...errorSchema,
       200: {
-        ...success(
+        ...successSchema(
           z.object({ accessToken: z.string(), refreshToken: z.string(), newUser: z.boolean() })
         ),
         description: 'verify otp code successful'
@@ -109,8 +114,9 @@ export const authSchema = {
       })
     },
     responses: {
+      ...errorSchema,
       200: {
-        ...success(z.null()),
+        ...successSchema(z.null()),
         description: 'verify magic link successful'
       }
     }

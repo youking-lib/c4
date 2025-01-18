@@ -27,12 +27,20 @@ export const useJwtSession = (options: { whitelist: string[] }): MiddlewareHandl
         algorithms: ['ES256']
       })
       .catch(err => {
-        console.error(err);
         return null;
       });
 
     if (!valid || !valid.payload.sub) {
-      return c.json({ error: 'Unauthorized' }, 401);
+      return c.json(
+        {
+          status: 'error',
+          error: {
+            message: '',
+            code: 'bad_request'
+          }
+        },
+        401
+      );
     }
 
     const user = await getOrInitUserTeam(api, valid.payload.sub);

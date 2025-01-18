@@ -17,7 +17,16 @@ route.openapi(authSchema.sendOTPCode, async c => {
   const res = await stack.sendMagicLinkEmail(email, 'http://localhost:3000/auth/magic-link/verify');
 
   if (res.status === 'error') {
-    throw new Error(res.error.message);
+    return c.json(
+      {
+        status: 'error',
+        error: {
+          message: '',
+          code: 'bad_request'
+        }
+      } as const,
+      400
+    );
   }
 
   return c.json({ status: 'success', data: { nonce: res.data.nonce } } as const, 200);
@@ -32,7 +41,16 @@ route.openapi(authSchema.verifyOTPCode, async c => {
   const res = await stack.signInWithMagicLink(code + nonce);
 
   if (res.status === 'error') {
-    throw new Error(res.error.message);
+    return c.json(
+      {
+        status: 'error',
+        error: {
+          message: res.error.message,
+          code: 'bad_request'
+        }
+      } as const,
+      400
+    );
   }
 
   return c.json(

@@ -26,6 +26,7 @@ export class Code<SecurityDataType = unknown> {
    * @name ProjectCodeDetail
    * @request GET:/api/project/{projectId}/code/{codeId}
    * @secure
+   * @response `200` `ProjectCodeDetailData` Retrieve code successful
    */
   projectCodeDetail = (projectId: string, codeId: string, params: RequestParams = {}) =>
     this.http.request<ProjectCodeDetailData, any>({
