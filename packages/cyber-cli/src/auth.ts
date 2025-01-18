@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { intro, log, outro, spinner, text } from '@clack/prompts';
+import { intro, isCancel, log, outro, spinner, text } from '@clack/prompts';
 import { createClient } from '@cyber-express/client';
 import { getAuthorization, setAuthorization } from './conf';
 
@@ -18,22 +18,34 @@ export async function login() {
     }
   });
 
+  if (isCancel(email)) {
+    log.error('Login cancelled');
+    return;
+  }
+
   const client = getClient();
   const loading = spinner();
 
   loading.start('Sending OTP code...');
 
   const authOtp = await client.auth.authOtpSendCodeCreate({
-    email: email as string
+    email
   });
 
-  if (authOtp.data.status !== 'success') {
+  if (authOtp.error) {
     loading.stop('Failed to send OTP code');
-  } else {
-    loading.stop('The OTP code has been sent to your email');
+    return;
   }
 
+  loading.stop('The OTP code has been sent to your email');
+
   const accessToken = await checkOtp(authOtp.data.data.nonce);
+
+  if (isCancel(accessToken)) {
+    log.error('Login cancelled');
+    return;
+  }
+
   setAuthorization(accessToken);
 
   client.setOptions({
@@ -63,6 +75,10 @@ export async function login() {
       }
     });
 
+    if (isCancel(otp)) {
+      return otp;
+    }
+
     loading.start('Verifying OTP code...');
 
     const authOtpVerify = await client.auth.authOtpVerifyCodeCreate({
@@ -70,8 +86,9 @@ export async function login() {
       code: otp as string
     });
 
-    if (authOtpVerify.data.status !== 'success') {
+    if (authOtpVerify.error) {
       loading.stop('Failed to verify OTP code');
+
       return checkOtp(nonce);
     }
 
