@@ -10,14 +10,14 @@
  */
 
 import {
+  AuthMeListData,
+  AuthMeListError,
   AuthOtpSendCodeCreateData,
   AuthOtpSendCodeCreateError,
   AuthOtpSendCodeCreatePayload,
   AuthOtpVerifyCodeCreateData,
   AuthOtpVerifyCodeCreateError,
   AuthOtpVerifyCodeCreatePayload,
-  AuthUserCreateData,
-  AuthUserCreateError,
 } from "./data-contracts";
 import { ContentType, HttpClient, RequestParams } from "./http-client";
 
@@ -32,10 +32,10 @@ export class Auth<SecurityDataType = unknown> {
  * No description
  *
  * @tags auth
- * @name AuthUserCreate
- * @request POST:/api/auth/user
+ * @name AuthMeList
+ * @request GET:/api/auth/me
  * @secure
- * @response `200` `AuthUserCreateData` Login successful
+ * @response `200` `AuthMeListData` Login successful
  * @response `400` `{
     status: "error",
     error: {
@@ -163,10 +163,10 @@ export class Auth<SecurityDataType = unknown> {
 
 }` The server has encountered a situation it does not know how to handle.
  */
-  authUserCreate = (params: RequestParams = {}) =>
-    this.http.request<AuthUserCreateData, AuthUserCreateError>({
-      path: `/api/auth/user`,
-      method: "POST",
+  authMeList = (params: RequestParams = {}) =>
+    this.http.request<AuthMeListData, AuthMeListError>({
+      path: `/api/auth/me`,
+      method: "GET",
       secure: true,
       format: "json",
       ...params,

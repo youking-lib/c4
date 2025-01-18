@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "type": "module",
   "main": "./dist/index.js",
-  "module": "./src/index.ts",
+  "module": "./src/index.js",
   "types": "./src/index.ts",
   "bin": {
     "c4": "./dist/index.js",

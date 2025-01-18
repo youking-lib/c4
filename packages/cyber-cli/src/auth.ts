@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { intro, log, outro, spinner, text } from '@clack/prompts';
 import { createClient } from '@cyber-express/client';
-import { setAuthorization } from './conf';
+import { getAuthorization, setAuthorization } from './conf';
 
 export async function login() {
   intro(`Login to Cyber`);
@@ -19,7 +19,6 @@ export async function login() {
   });
 
   const client = getClient();
-
   const loading = spinner();
 
   loading.start('Sending OTP code...');
@@ -36,6 +35,17 @@ export async function login() {
 
   const accessToken = await checkOtp(authOtp.data.data.nonce);
   setAuthorization(accessToken);
+
+  client.setOptions({
+    token: accessToken
+  });
+
+  const user = await client.auth.authMeList();
+
+  if (user.error) {
+    log.error(user.error.error.message!);
+    return;
+  }
 
   log.success(`Hello ${email as string}!`);
   outro('Login successful ~');
@@ -74,7 +84,6 @@ export async function login() {
 export function getClient() {
   return createClient({
     baseUrl: 'http://127.0.0.1:8787',
-    token:
-      'eyJhbGciOiJFUzI1NiIsImtpZCI6ImVYcWRCb3pablNKSCJ9.eyJzdWIiOiI5ZTFhZDg3Zi1iM2QyLTRmODItYmY2Ny01ZDc2NDY4ZjI5ZmMiLCJpc3MiOiJodHRwczovL2FjY2Vzcy10b2tlbi5qd3Qtc2lnbmF0dXJlLnN0YWNrLWF1dGguY29tIiwiaWF0IjoxNzM3MTA2ODM4LCJhdWQiOiI0M2Q0ZjQxMS0yNWMxLTQzOGUtODMwYi1iMDJkY2FmNDI3ODQiLCJleHAiOjE3MzcxNTAwMzh9.eI4D0yNw_WA8y1WpBVAHGz6M9lnm3w660aqfch_XUyfHepQeeLNXF4SkaQsv9Z5eJbZYKDCnXi8Iou2SJvmYPg'
+    token: getAuthorization()
   });
 }

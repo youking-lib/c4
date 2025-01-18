@@ -6,13 +6,12 @@ import { HttpClient } from './api/http-client';
 export * from './api/data-contracts';
 export * from './api/http-client';
 
-export function createClient({
-  baseUrl = 'http://127.0.0.1:8787',
-  token = ''
-}: {
-  baseUrl: string;
+export type HttpOptions = {
   token: string;
-}) {
+  baseUrl: string;
+};
+
+export function createClient({ baseUrl = 'http://127.0.0.1:8787', token = '' }: HttpOptions) {
   const http = new HttpClient({
     baseUrl,
     baseApiParams: {
@@ -22,10 +21,33 @@ export function createClient({
     }
   });
 
-  return {
-    http,
+  const client = {
+    setOptions,
     auth: new Auth(http),
     code: new Code(http),
     file: new File(http)
   };
+
+  function setOptions(options: Partial<HttpOptions>) {
+    options = {
+      baseUrl,
+      token,
+      ...options
+    };
+
+    const http = new HttpClient({
+      baseUrl: options.baseUrl,
+      baseApiParams: {
+        headers: {
+          Authorization: `Bearer ${options.token}`
+        }
+      }
+    });
+
+    client.auth.http = http;
+    client.code.http = http;
+    client.file.http = http;
+  }
+
+  return client;
 }

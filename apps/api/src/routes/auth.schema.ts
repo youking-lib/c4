@@ -41,12 +41,20 @@ export const authSchema = {
 
   loginUser: createRoute({
     tags: ['auth'],
-    method: 'post',
-    path: '/auth/user',
+    method: 'get',
+    path: '/auth/me',
     responses: {
       ...errorSchema,
       200: {
-        ...successSchema(z.null()),
+        ...successSchema(
+          z.object({
+            uid: z.string(),
+            name: z.string(),
+            email: z.string(),
+            projectId: z.string(),
+            projectName: z.string()
+          })
+        ),
         description: 'Login successful'
       }
     }

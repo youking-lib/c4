@@ -21,7 +21,7 @@ route.openapi(authSchema.sendOTPCode, async c => {
       {
         status: 'error',
         error: {
-          message: '',
+          message: res.error.message,
           code: 'bad_request'
         }
       } as const,

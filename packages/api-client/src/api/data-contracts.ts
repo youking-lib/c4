@@ -63,12 +63,18 @@ export interface ProjectCodeDetailData {
   }[];
 }
 
-export interface AuthUserCreateData {
+export interface AuthMeListData {
   status: "success";
-  data: any;
+  data: {
+    uid: string;
+    name: string;
+    email: string;
+    projectId: string;
+    projectName: string;
+  };
 }
 
-export type AuthUserCreateError =
+export type AuthMeListError =
   | {
       status: "error";
       error: {
