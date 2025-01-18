@@ -15,6 +15,7 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@types/archiver": "^6.0.3",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^22.10.5"
   },
@@ -22,6 +23,7 @@
     "@clack/core": "^0.4.1",
     "@clack/prompts": "^0.9.1",
     "@cyber-express/client": "workspace:*",
+    "archiver": "^7.0.1",
     "cac": "^6.7.14",
     "conf": "^13.1.0",
     "js-yaml": "^4.1.0",

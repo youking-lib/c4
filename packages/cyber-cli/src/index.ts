@@ -1,5 +1,6 @@
 import { cac } from 'cac';
 import { login } from './auth';
+import { upload } from './file';
 
 const cyber = cac('c4');
 
@@ -12,7 +13,9 @@ cyber
   .example('cyber upload ./some/file.txt')
   .example('cyber upload ./some/file.txt ./some/other/file.txt')
   .action(filepaths => {
-    console.log(filepaths);
+    // console.log(filepaths);
+
+    upload(filepaths);
   });
 
 cyber

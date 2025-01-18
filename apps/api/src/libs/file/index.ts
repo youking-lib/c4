@@ -42,7 +42,7 @@ export async function uploadPreHash(
         size: options.size,
         type: options.type,
         projectId: session.projectId,
-        ownerId: session.userId
+        ownerId: session.uid
       }
     });
 
