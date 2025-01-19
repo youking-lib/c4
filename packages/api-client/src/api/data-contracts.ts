@@ -9,14 +9,14 @@
  * ---------------------------------------------------------------
  */
 
-export interface ProjectFileUploadCheckCreatePayload {
+export interface FileUploadCheckCreatePayload {
   filename: string;
   type: string;
   size: number;
   hash: string;
 }
 
-export type ProjectFileUploadCheckCreateData =
+export type FileUploadCheckCreateData =
   | {
       file: {
         id: string;
@@ -40,11 +40,11 @@ export type ProjectFileUploadCheckCreateData =
       preSignedUrl: string;
     };
 
-export interface ProjectFileDownloadDetailData {
+export interface FileDownloadDetailData {
   downloadUrl: string;
 }
 
-export interface ProjectCodeDetailData {
+export interface CodeDetailData {
   files: {
     id: string;
     name: string;

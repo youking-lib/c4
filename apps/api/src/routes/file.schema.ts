@@ -5,11 +5,8 @@ export const fileSchema = {
   uploadCheckRoute: createRoute({
     tags: ['file'],
     method: 'post',
-    path: '/project/{projectId}/file/upload/check',
+    path: '/file/upload/check',
     request: {
-      params: z.object({
-        projectId: z.string()
-      }),
       body: {
         content: {
           'application/json': {
@@ -46,10 +43,9 @@ export const fileSchema = {
   downloadRoute: createRoute({
     tags: ['file'],
     method: 'get',
-    path: '/project/{projectId}/file/download/{fileId}',
+    path: '/file/download/{fileId}',
     request: {
       params: z.object({
-        projectId: z.string(),
         fileId: z.string()
       })
     },

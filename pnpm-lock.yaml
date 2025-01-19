@@ -234,6 +234,12 @@ importers:
 
   packages/cyber-cli:
     dependencies:
+      '@aws-sdk/client-s3':
+        specifier: ^3.726.1
+        version: 3.726.1
+      '@aws-sdk/lib-storage':
+        specifier: ^3.731.1
+        version: 3.731.1(@aws-sdk/client-s3@3.726.1)
       '@clack/core':
         specifier: ^0.4.1
         version: 0.4.1
@@ -252,9 +258,15 @@ importers:
       conf:
         specifier: ^13.1.0
         version: 13.1.0
+      js-md5:
+        specifier: ^0.8.3
+        version: 0.8.3
       js-yaml:
         specifier: ^4.1.0
         version: 4.1.0
+      mime:
+        specifier: ^4.0.6
+        version: 4.0.6
       yaml:
         specifier: ^2.7.0
         version: 2.7.0
@@ -445,6 +457,12 @@ packages:
     engines: {node: '>=18.0.0'}
     peerDependencies:
       '@aws-sdk/client-sts': ^3.723.0
+
+  '@aws-sdk/lib-storage@3.731.1':
+    resolution: {integrity: sha512-+ajlL3FOCHu+HEB8M5BJ3Rvq+QmXfGdgzU5tmnVMJUl1V9ggbG9P01EmrVX7Q7INdWezQYr/VWqUcOmUW4zuBQ==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      '@aws-sdk/client-s3': ^3.731.1
 
   '@aws-sdk/middleware-bucket-endpoint@3.726.0':
     resolution: {integrity: sha512-vpaP80rZqwu0C3ELayIcRIW84/nd1tadeoqllT+N9TDshuEvq4UJ+w47OBHB7RkHFJoc79lXXNYle0fdQdaE/A==}
@@ -3114,6 +3132,9 @@ packages:
     resolution: {integrity: sha512-Db1SbgBS/fg/392AblrMJk97KggmvYhr4pB5ZIMTWtaivCPMWLkmb7m21cJvpvgK+J3nsU2CmmixNBZx4vFj/w==}
     engines: {node: '>=8.0.0'}
 
+  buffer@5.6.0:
+    resolution: {integrity: sha512-/gDYp/UtU0eA1ys8bOs9J6a+E/KWIY+DZ+Q2WESNUA0jFRsJOc0SNUO6xJ5SGA1xueg3NL65W6s+NY5l9cunuw==}
+
   buffer@5.7.1:
     resolution: {integrity: sha512-EHcyIPBQ4BSGlvjB16k5KgAJ27CIsHY/2JBmCRReo48y9rQ3MaUzWX3KVlBa4U7MyX02HdVj0K7C3WaB3ju7FQ==}
 
@@ -4404,6 +4425,11 @@ packages:
     engines: {node: '>=10.0.0'}
     hasBin: true
 
+  mime@4.0.6:
+    resolution: {integrity: sha512-4rGt7rvQHBbaSOF9POGkk1ocRP16Md1x36Xma8sz8h8/vfCUI2OtEIeCqe4Ofes853x4xDoPiFLIT47J5fI/7A==}
+    engines: {node: '>=16'}
+    hasBin: true
+
   mimic-fn@2.1.0:
     resolution: {integrity: sha512-OqbOk5oEQeAZ8WXWydlu9HJjz9WVdEIvamMCcXmuqUYjTknH/sqsWvhQ3vgwKFRR1HpjvNBKQ37nbJgYzGqGcg==}
     engines: {node: '>=6'}
@@ -5257,6 +5283,9 @@ packages:
   stoppable@1.1.0:
     resolution: {integrity: sha512-KXDYZ9dszj6bzvnEMRYvxgeTHU74QBFL54XKtP3nyMuJ81CFYtABZ3bAzL2EdFUaEwJOBOgENyFj3R7oTzDyyw==}
     engines: {node: '>=4', npm: '>=6'}
+
+  stream-browserify@3.0.0:
+    resolution: {integrity: sha512-H73RAHsVBapbim0tU2JwwOiXUj+fikfiaoYAKHF3VJfA0pe2BCzkhAHBlLG6REzE+2WNZcxOXjK7lkso+9euLA==}
 
   streamsearch@1.1.0:
     resolution: {integrity: sha512-Mcc5wHehp9aXz1ax6bZUyY5afg9u2rv5cqQI3mRrYkGC8rW2hM02jWuwjtL++LS5qinSyhj2QfLyNsuc+VsExg==}
@@ -6216,6 +6245,17 @@ snapshots:
       '@aws-sdk/types': 3.723.0
       '@smithy/property-provider': 4.0.1
       '@smithy/types': 4.1.0
+      tslib: 2.8.1
+
+  '@aws-sdk/lib-storage@3.731.1(@aws-sdk/client-s3@3.726.1)':
+    dependencies:
+      '@aws-sdk/client-s3': 3.726.1
+      '@smithy/abort-controller': 4.0.1
+      '@smithy/middleware-endpoint': 4.0.1
+      '@smithy/smithy-client': 4.1.1
+      buffer: 5.6.0
+      events: 3.3.0
+      stream-browserify: 3.0.0
       tslib: 2.8.1
 
   '@aws-sdk/middleware-bucket-endpoint@3.726.0':
@@ -9481,6 +9521,11 @@ snapshots:
 
   buffer-crc32@1.0.0: {}
 
+  buffer@5.6.0:
+    dependencies:
+      base64-js: 1.5.1
+      ieee754: 1.2.1
+
   buffer@5.7.1:
     dependencies:
       base64-js: 1.5.1
@@ -10931,6 +10976,8 @@ snapshots:
 
   mime@3.0.0: {}
 
+  mime@4.0.6: {}
+
   mimic-fn@2.1.0: {}
 
   mimic-function@5.0.1: {}
@@ -11876,6 +11923,11 @@ snapshots:
   std-env@3.8.0: {}
 
   stoppable@1.1.0: {}
+
+  stream-browserify@3.0.0:
+    dependencies:
+      inherits: 2.0.4
+      readable-stream: 3.6.2
 
   streamsearch@1.1.0: {}
 

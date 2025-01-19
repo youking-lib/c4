@@ -5,7 +5,7 @@ export const codeSchema = {
   retrieveRoute: createRoute({
     tags: ['code'],
     method: 'get',
-    path: '/project/{projectId}/code/{codeId}',
+    path: '/code/{codeId}',
     request: {
       params: z.object({
         projectId: z.string(),

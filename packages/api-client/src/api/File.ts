@@ -9,11 +9,7 @@
  * ---------------------------------------------------------------
  */
 
-import {
-  ProjectFileDownloadDetailData,
-  ProjectFileUploadCheckCreateData,
-  ProjectFileUploadCheckCreatePayload,
-} from "./data-contracts";
+import { FileDownloadDetailData, FileUploadCheckCreateData, FileUploadCheckCreatePayload } from "./data-contracts";
 import { ContentType, HttpClient, RequestParams } from "./http-client";
 
 export class File<SecurityDataType = unknown> {
@@ -27,18 +23,14 @@ export class File<SecurityDataType = unknown> {
    * No description
    *
    * @tags file
-   * @name ProjectFileUploadCheckCreate
-   * @request POST:/api/project/{projectId}/file/upload/check
+   * @name FileUploadCheckCreate
+   * @request POST:/api/file/upload/check
    * @secure
-   * @response `200` `ProjectFileUploadCheckCreateData` Upload successful
+   * @response `200` `FileUploadCheckCreateData` Upload successful
    */
-  projectFileUploadCheckCreate = (
-    projectId: string,
-    data: ProjectFileUploadCheckCreatePayload,
-    params: RequestParams = {},
-  ) =>
-    this.http.request<ProjectFileUploadCheckCreateData, any>({
-      path: `/api/project/${projectId}/file/upload/check`,
+  fileUploadCheckCreate = (data: FileUploadCheckCreatePayload, params: RequestParams = {}) =>
+    this.http.request<FileUploadCheckCreateData, any>({
+      path: `/api/file/upload/check`,
       method: "POST",
       body: data,
       secure: true,
@@ -50,14 +42,14 @@ export class File<SecurityDataType = unknown> {
    * No description
    *
    * @tags file
-   * @name ProjectFileDownloadDetail
-   * @request GET:/api/project/{projectId}/file/download/{fileId}
+   * @name FileDownloadDetail
+   * @request GET:/api/file/download/{fileId}
    * @secure
-   * @response `200` `ProjectFileDownloadDetailData` Download successful
+   * @response `200` `FileDownloadDetailData` Download successful
    */
-  projectFileDownloadDetail = (projectId: string, fileId: string, params: RequestParams = {}) =>
-    this.http.request<ProjectFileDownloadDetailData, any>({
-      path: `/api/project/${projectId}/file/download/${fileId}`,
+  fileDownloadDetail = (fileId: string, params: RequestParams = {}) =>
+    this.http.request<FileDownloadDetailData, any>({
+      path: `/api/file/download/${fileId}`,
       method: "GET",
       secure: true,
       format: "json",

@@ -9,7 +9,7 @@
  * ---------------------------------------------------------------
  */
 
-import { ProjectCodeDetailData } from "./data-contracts";
+import { CodeDetailData } from "./data-contracts";
 import { HttpClient, RequestParams } from "./http-client";
 
 export class Code<SecurityDataType = unknown> {
@@ -23,14 +23,14 @@ export class Code<SecurityDataType = unknown> {
    * No description
    *
    * @tags code
-   * @name ProjectCodeDetail
-   * @request GET:/api/project/{projectId}/code/{codeId}
+   * @name CodeDetail
+   * @request GET:/api/code/{codeId}
    * @secure
-   * @response `200` `ProjectCodeDetailData` Retrieve code successful
+   * @response `200` `CodeDetailData` Retrieve code successful
    */
-  projectCodeDetail = (projectId: string, codeId: string, params: RequestParams = {}) =>
-    this.http.request<ProjectCodeDetailData, any>({
-      path: `/api/project/${projectId}/code/${codeId}`,
+  codeDetail = (projectId: string, codeId: string, params: RequestParams = {}) =>
+    this.http.request<CodeDetailData, any>({
+      path: `/api/code/${codeId}`,
       method: "GET",
       secure: true,
       format: "json",

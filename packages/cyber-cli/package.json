@@ -20,13 +20,17 @@
     "@types/node": "^22.10.5"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.726.1",
+    "@aws-sdk/lib-storage": "^3.731.1",
     "@clack/core": "^0.4.1",
     "@clack/prompts": "^0.9.1",
     "@cyber-express/client": "workspace:*",
     "archiver": "^7.0.1",
     "cac": "^6.7.14",
     "conf": "^13.1.0",
+    "js-md5": "^0.8.3",
     "js-yaml": "^4.1.0",
+    "mime": "^4.0.6",
     "yaml": "^2.7.0",
     "zod": "^3.24.1"
   }
