@@ -3,6 +3,7 @@ import { nanoid } from 'nanoid';
 
 export async function retrieveCodeFiles(api: APIContext, code: string) {
   const prisma = await api.getPrismaClient();
+
   const result = await prisma.code.findUnique({
     where: {
       code

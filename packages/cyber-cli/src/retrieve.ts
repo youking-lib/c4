@@ -3,6 +3,8 @@ import path from 'node:path';
 import { intro, log } from '@clack/prompts';
 import { getClient } from './libs/client';
 
+retrieve('IfmAVk');
+
 export async function retrieve(code: string) {
   intro(`Retrieving`);
 
@@ -20,13 +22,14 @@ export async function retrieve(code: string) {
 
   if (retrieveRes.error) {
     log.error(retrieveRes.error.message!);
+    return;
   }
 
   const { files } = retrieveRes.data.data;
 
-  for (const file of files) {
-    const fileRes = await client.file.fileDownloadDetail(file.id);
+  console.log('files', files);
 
-    console.log('fileRes', fileRes);
+  for (const file of files) {
+    // const fileRes = await client.file.fileDownloadDetail(file.fileId);
   }
 }

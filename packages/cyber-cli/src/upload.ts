@@ -7,7 +7,7 @@ import { archive } from './libs/utils';
 import { uploadFile } from './libs/s3';
 import { getClient } from './libs/client';
 
-upload(['./README.md', './src', './node_modules', './package.json']);
+// upload(['./README.md', './src', './node_modules', './package.json']);
 
 export async function upload(paths: string[]) {
   intro(`Uploading`);

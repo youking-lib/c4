@@ -6,7 +6,7 @@ import { codeSchema } from './code.schema';
 
 route.openapi(codeSchema.retrieveRoute, async c => {
   const api = new APIContext(c);
-  const { codeId } = c.req.param();
+  const { codeId } = c.req.valid('param');
 
   const codeFiles = await retrieveCodeFiles(api, codeId);
 
@@ -19,8 +19,6 @@ route.openapi(codeSchema.retrieveRoute, async c => {
 route.openapi(codeSchema.createCodeRoute, async c => {
   const api = new APIContext(c);
   const { fileIds } = c.req.valid('json');
-
-  console.log('fileIds', fileIds);
 
   const code = await createCode(api, fileIds);
 

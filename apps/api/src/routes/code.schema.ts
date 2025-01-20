@@ -1,5 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi';
-import { CodeModel, FileModel } from './dto';
+import { CodeModel, FileModel, FileWithCodeModel } from './dto';
 import { errorSchema, successSchema } from './utils';
 
 export const codeSchema = {
@@ -18,7 +18,7 @@ export const codeSchema = {
         ...successSchema(
           z.object({
             code: CodeModel,
-            files: z.array(FileModel)
+            files: z.array(FileWithCodeModel)
           })
         ),
         description: 'Retrieve code successful'

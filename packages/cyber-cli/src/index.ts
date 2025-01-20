@@ -2,6 +2,7 @@ import { cac } from 'cac';
 
 import { login } from './login';
 import { upload } from './upload';
+import { retrieve } from './retrieve';
 
 const cyber = cac('c4');
 
@@ -23,7 +24,8 @@ cyber
   .command('get', 'Get files from cyber by code')
   .example('cyber get 456123')
   .action(code => {
-    console.log(code);
+    // console.log(code);
+    retrieve(code);
   });
 
 cyber.command('list', 'List files from cyber').action(() => {

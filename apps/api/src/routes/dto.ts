@@ -35,3 +35,13 @@ export const CodeModel = z.object({
 });
 
 export type Code = z.infer<typeof CodeModel>;
+
+export const FileWithCodeModel = z.object({
+  id: z.string(),
+  codeId: z.string(),
+  fileId: z.string(),
+  createdAt: z.date(),
+  ownerId: z.string().nullish()
+});
+
+export type FileWithCode = z.infer<typeof FileWithCodeModel>;
