@@ -16,6 +16,19 @@ export async function retrieveCodeFiles(api: APIContext, code: string) {
     throw new Error('Code not found');
   }
 
+  // stats
+  await prisma.code.update({
+    where: {
+      id: result.id
+    },
+    data: {
+      retrieves: {
+        increment: 1
+      },
+      lastRetrievedAt: new Date()
+    }
+  });
+
   return result;
 }
 

@@ -22,6 +22,19 @@ export async function getDownloadUrl(api: APIContext, fileId: string) {
     throw new Error('File is disabled');
   }
 
+  // stats
+  await prisma.file.update({
+    where: {
+      id: fileId
+    },
+    data: {
+      downloads: {
+        increment: 1
+      },
+      lastDownloadedAt: new Date()
+    }
+  });
+
   return getPreSignedGetUrl(client, env.S3_BUCKET_NAME, file.key);
 }
 
