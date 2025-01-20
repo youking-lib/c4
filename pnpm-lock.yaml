@@ -77,6 +77,9 @@ importers:
       zod:
         specifier: ^3.24.1
         version: 3.24.1
+      zod-error:
+        specifier: ^1.5.0
+        version: 1.5.0
       zod-prisma:
         specifier: ^0.5.4
         version: 0.5.4(prisma@6.2.1)(zod@3.24.1)
@@ -5872,6 +5875,9 @@ packages:
   zip-stream@6.0.1:
     resolution: {integrity: sha512-zK7YHHz4ZXpW89AHXUPbQVGKI7uvkd3hzusTdotCg1UxyaVtg0zFJSTfW/Dq5f7OBBVnq6cZIaC8Ti4hb6dtCA==}
     engines: {node: '>= 14'}
+
+  zod-error@1.5.0:
+    resolution: {integrity: sha512-zzopKZ/skI9iXpqCEPj+iLCKl9b88E43ehcU+sbRoHuwGd9F1IDVGQ70TyO6kmfiRL1g4IXkjsXK+g1gLYl4WQ==}
 
   zod-prisma@0.5.4:
     resolution: {integrity: sha512-5Ca4Qd1a1jy1T/NqCEpbr0c+EsbjJfJ/7euEHob3zDvtUK2rTuD1Rc/vfzH8q8PtaR2TZbysD88NHmrLwpv3Xg==}
@@ -12677,6 +12683,10 @@ snapshots:
       archiver-utils: 5.0.2
       compress-commons: 6.0.2
       readable-stream: 4.7.0
+
+  zod-error@1.5.0:
+    dependencies:
+      zod: 3.24.1
 
   zod-prisma@0.5.4(prisma@6.2.1)(zod@3.24.1):
     dependencies:

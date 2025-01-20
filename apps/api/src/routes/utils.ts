@@ -1,4 +1,6 @@
+import { generateErrorMessage } from 'zod-error';
 import { z } from '@hono/zod-openapi';
+import { ContentfulStatusCode } from 'hono/utils/http-status';
 
 export function successSchema<T extends z.ZodTypeAny>(data: T) {
   const result = z.object({ status: z.literal('success') });
@@ -69,19 +71,88 @@ export function errorSchemaFactory<T extends z.ZodTypeAny>(code: T, description:
       'application/json': {
         schema: z.object({
           status: z.literal('error'),
-          error: z.object({
-            code,
-            message: z.string().default(description).openapi({
-              description: 'A human readable explanation of what went wrong.',
-              example: 'The requested resource was not found.'
-            })
-            // doc_url: z.string().default('https://c4.top/docs').openapi({
-            //   description: 'A link to our documentation with more details about this error code',
-            //   example: `https://c4.top/docs`
-            // })
+          code,
+          message: z.string().default(description).openapi({
+            description: 'A human readable explanation of what went wrong.',
+            example: 'The requested resource was not found.'
           })
+          // doc_url: z.string().nullish().default('https://c4.top/docs').openapi({
+          //   description: 'A link to our documentation with more details about this error code',
+          //   example: `https://c4.top/docs`
+          // })
         })
       }
     }
+  };
+}
+
+const ErrorSchema = z.object({
+  status: z.literal('error'),
+  code: z.string(),
+  message: z.string().default('The request is invalid.').openapi({
+    description: 'A human readable explanation of what went wrong.',
+    example: 'The request is invalid.'
+  }),
+  doc_url: z.string().default('https://c4.top/docs').openapi({
+    description: 'A link to our documentation with more details about this error code',
+    example: `https://c4.top/docs`
+  })
+});
+
+export type ErrorResponse = z.infer<typeof ErrorSchema>;
+
+export function handleError(
+  error: any
+): (typeof ErrorSchema)['_input'] & { httpStatus: ContentfulStatusCode } {
+  console.error('API error occurred', error.message);
+
+  if (error instanceof z.ZodError) {
+    return {
+      ...fromZodError(error),
+      httpStatus: 400
+    };
+  }
+
+  if (error instanceof Error) {
+    return {
+      status: 'error',
+      code: 'internal_server_error',
+      message: error.message,
+      httpStatus: 500
+    };
+  }
+
+  return {
+    status: 'error',
+    code: '',
+    message:
+      'An internal server error occurred. Please contact our support if the problem persists.',
+    httpStatus: 500
+  };
+}
+
+export function fromZodError(error: z.ZodError): (typeof ErrorSchema)['_input'] {
+  return {
+    status: 'error',
+    code: 'bad_request',
+    message: generateErrorMessage(error.issues, {
+      maxErrors: 1,
+      delimiter: {
+        component: ': '
+      },
+      path: {
+        enabled: true,
+        type: 'objectNotation',
+        label: ''
+      },
+      code: {
+        enabled: true,
+        label: ''
+      },
+      message: {
+        enabled: true,
+        label: ''
+      }
+    })
   };
 }

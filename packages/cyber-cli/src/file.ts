@@ -147,30 +147,6 @@ export async function archive(dir: string, dest: string) {
 
 // uploadFile('./README.md');
 
-export async function uploadFile(filepath: string) {
-  const client = getClient();
-
-  const buffer = fs.readFileSync(filepath, {
-    encoding: 'utf8'
-  });
-
-  const hash = md5(buffer);
-  const type = mime.getType(filepath) || path.extname(filepath);
-
-  const file = await client.file.fileUploadCheckCreate({
-    filename: path.basename(filepath),
-    type,
-    size: buffer.length,
-    hash: hash
-  });
-
-  if (file.error) {
-    log.error(file.error.message);
-  }
-
-  console.log(file.data);
-}
-
 // export function* readPathAsFile(path: string) {
 //   const stats = fs.statSync(path);
 

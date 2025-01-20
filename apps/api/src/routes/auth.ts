@@ -20,10 +20,8 @@ route.openapi(authSchema.sendOTPCode, async c => {
     return c.json(
       {
         status: 'error',
-        error: {
-          message: res.error.message,
-          code: 'bad_request'
-        }
+        message: res.error.message,
+        code: 'bad_request'
       } as const,
       400
     );
@@ -44,10 +42,8 @@ route.openapi(authSchema.verifyOTPCode, async c => {
     return c.json(
       {
         status: 'error',
-        error: {
-          message: res.error.message,
-          code: 'bad_request'
-        }
+        message: res.error.message,
+        code: 'bad_request'
       } as const,
       400
     );

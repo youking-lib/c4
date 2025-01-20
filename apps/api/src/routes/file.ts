@@ -12,15 +12,58 @@ route.openapi(fileSchema.uploadCheckRoute, async c => {
   if (file) {
     return c.json(
       {
-        file
-      },
+        status: 'success',
+        data: {
+          file
+        }
+      } as const,
       200
     );
   }
 
   const { key, preSignedUrl } = await uploadPreSign(api, { filename });
 
-  return c.json({ key, preSignedUrl }, 200);
+  return c.json(
+    {
+      status: 'success',
+      data: {
+        key,
+        preSignedUrl,
+        file: null
+      }
+    } as const,
+    200
+  );
+});
+
+route.openapi(fileSchema.uploadFileRoute, async c => {
+  const api = new APIContext(c);
+  const { key, filename, type, size, hash } = c.req.valid('json');
+
+  const session = await api.getSession();
+  const prisma = await api.getPrismaClient();
+
+  const file = await prisma.file.create({
+    data: {
+      key,
+      name: filename,
+      type,
+      size,
+      hash,
+      projectId: session.projectId,
+      ownerId: session.uid
+    }
+  });
+
+  return c.json(
+    {
+      status: 'success',
+      data: {
+        file
+      }
+    } as const,
+    200
+  );
 });
 
 route.openapi(fileSchema.downloadRoute, async c => {
@@ -28,5 +71,13 @@ route.openapi(fileSchema.downloadRoute, async c => {
   const { fileId } = c.req.param();
   const downloadUrl = await getDownloadUrl(api, fileId);
 
-  return c.json({ downloadUrl }, 200);
+  return c.json(
+    {
+      status: 'success',
+      data: {
+        downloadUrl
+      }
+    } as const,
+    200
+  );
 });

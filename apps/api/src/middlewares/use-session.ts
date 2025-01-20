@@ -34,10 +34,8 @@ export const useJwtSession = (options: { whitelist: string[] }): MiddlewareHandl
       return c.json(
         {
           status: 'error',
-          error: {
-            message: '',
-            code: 'bad_request'
-          }
+          message: 'Unauthorized',
+          code: 'unauthorized'
         },
         401
       );
@@ -46,7 +44,14 @@ export const useJwtSession = (options: { whitelist: string[] }): MiddlewareHandl
     const user = await getOrInitUserTeam(api, valid.payload.sub);
 
     if (!user) {
-      return c.json({ error: 'Unauthorized, user not found' }, 401);
+      return c.json(
+        {
+          status: 'error',
+          message: 'Unauthorized, user not found',
+          code: 'unauthorized'
+        },
+        401
+      );
     }
 
     c.set('session', {

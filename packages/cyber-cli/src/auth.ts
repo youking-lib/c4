@@ -55,7 +55,7 @@ export async function login() {
   const user = await client.auth.authMeList();
 
   if (user.error) {
-    log.error(user.error.error.message!);
+    log.error(user.error.message!);
     return;
   }
 

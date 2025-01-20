@@ -28,6 +28,7 @@
     "js-md5": "^0.8.3",
     "nanoid": "^5.0.9",
     "zod": "^3.24.1",
+    "zod-error": "^1.5.0",
     "zod-prisma": "^0.5.4"
   },
   "devDependencies": {
