@@ -1,5 +1,5 @@
 import * as z from "zod"
-import { CompleteFile, RelatedFileModel, CompleteUser, RelatedUserModel, CompleteProject, RelatedProjectModel } from "./index"
+import { CompleteFileWithCode, RelatedFileWithCodeModel, CompleteUser, RelatedUserModel, CompleteProject, RelatedProjectModel } from "./index"
 
 export const CodeModel = z.object({
   id: z.string(),
@@ -15,7 +15,7 @@ export const CodeModel = z.object({
 })
 
 export interface CompleteCode extends z.infer<typeof CodeModel> {
-  files: CompleteFile[]
+  files: CompleteFileWithCode[]
   owner?: CompleteUser | null
   Project?: CompleteProject | null
 }
@@ -26,7 +26,7 @@ export interface CompleteCode extends z.infer<typeof CodeModel> {
  * NOTE: Lazy required in case of potential circular dependencies within schema
  */
 export const RelatedCodeModel: z.ZodSchema<CompleteCode> = z.lazy(() => CodeModel.extend({
-  files: RelatedFileModel.array(),
+  files: RelatedFileWithCodeModel.array(),
   owner: RelatedUserModel.nullish(),
   Project: RelatedProjectModel.nullish(),
 }))

@@ -1,5 +1,5 @@
 import * as z from "zod"
-import { CompleteProject, RelatedProjectModel, CompleteUser, RelatedUserModel, CompleteCode, RelatedCodeModel } from "./index"
+import { CompleteProject, RelatedProjectModel, CompleteUser, RelatedUserModel, CompleteFileWithCode, RelatedFileWithCodeModel } from "./index"
 
 export const FileModel = z.object({
   id: z.string(),
@@ -15,13 +15,12 @@ export const FileModel = z.object({
   lastDownloadedAt: z.date().nullish(),
   projectId: z.string().nullish(),
   ownerId: z.string().nullish(),
-  codeId: z.string().nullish(),
 })
 
 export interface CompleteFile extends z.infer<typeof FileModel> {
   project?: CompleteProject | null
   owner?: CompleteUser | null
-  code?: CompleteCode | null
+  codes: CompleteFileWithCode[]
 }
 
 /**
@@ -32,5 +31,5 @@ export interface CompleteFile extends z.infer<typeof FileModel> {
 export const RelatedFileModel: z.ZodSchema<CompleteFile> = z.lazy(() => FileModel.extend({
   project: RelatedProjectModel.nullish(),
   owner: RelatedUserModel.nullish(),
-  code: RelatedCodeModel.nullish(),
+  codes: RelatedFileWithCodeModel.array(),
 }))

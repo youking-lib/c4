@@ -1,4 +1,5 @@
 export * from "./project"
 export * from "./user"
+export * from "./filewithcode"
 export * from "./file"
 export * from "./code"

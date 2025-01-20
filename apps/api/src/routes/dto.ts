@@ -16,8 +16,22 @@ export const FileModel = z.object({
   downloads: z.number().int(),
   lastDownloadedAt: z.date().nullish(),
   projectId: z.string().nullish(),
-  ownerId: z.string().nullish(),
-  codeId: z.string().nullish()
+  ownerId: z.string().nullish()
 });
 
 export type File = z.infer<typeof FileModel>;
+
+export const CodeModel = z.object({
+  id: z.string(),
+  code: z.string(),
+  slug: z.string().nullish(),
+  expiresAt: z.date(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+  retrieves: z.number().int(),
+  lastRetrievedAt: z.date().nullish(),
+  ownerId: z.string().nullish(),
+  projectId: z.string().nullish()
+});
+
+export type Code = z.infer<typeof CodeModel>;

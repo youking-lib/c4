@@ -4,11 +4,9 @@ import path from 'node:path';
 import { md5 } from 'js-md5';
 import { log } from '@clack/prompts';
 
-import { getClient } from './auth';
+import { getClient } from './client';
 
-uploadFile('./package.json');
-
-export async function uploadFile(filepath: string) {
+export async function uploadFile(filepath: string, filename: string) {
   const client = getClient();
 
   const buffer = fs.readFileSync(filepath, {
@@ -19,8 +17,8 @@ export async function uploadFile(filepath: string) {
   const type = mime.getType(filepath) || path.extname(filepath);
 
   const check = await client.file.fileUploadCheckCreate({
-    filename: path.basename(filepath),
     type,
+    filename,
     size: buffer.length,
     hash: hash
   });
@@ -47,7 +45,7 @@ export async function uploadFile(filepath: string) {
 
   const file = await client.file.fileUploadCreate({
     key: check.data.data.key,
-    filename: path.basename(filepath),
+    filename,
     type,
     size: buffer.length,
     hash: hash

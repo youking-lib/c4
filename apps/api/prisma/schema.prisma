@@ -46,14 +46,32 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  Code     Code[]
-  Projects Project[] @relation("Partners")
-  File     File[]
+  Code         Code[]
+  Projects     Project[]      @relation("Partners")
+  File         File[]
+  FileWithCode FileWithCode[]
 
   defaultProject Project? @relation("Owner")
 
   @@index([id])
   @@index([email])
+}
+
+model FileWithCode {
+  id String @id @default(cuid())
+
+  code   Code   @relation(fields: [codeId], references: [id])
+  codeId String
+
+  file   File   @relation(fields: [fileId], references: [id])
+  fileId String
+
+  createdAt DateTime @default(now())
+  owner     User?    @relation(fields: [ownerId], references: [id])
+  ownerId   String?
+
+  @@index([fileId, codeId])
+  @@index([ownerId])
 }
 
 model File {
@@ -80,13 +98,11 @@ model File {
   owner   User?   @relation(fields: [ownerId], references: [id])
   ownerId String?
 
-  code   Code?   @relation(fields: [codeId], references: [id])
-  codeId String?
+  codes FileWithCode[]
 
   @@index([id])
   @@index([ownerId])
   @@index([projectId])
-  @@index([codeId])
   @@index([hash])
   @@index([name])
   @@index([disabled])
@@ -107,7 +123,7 @@ model Code {
   lastRetrievedAt DateTime?
 
   // related
-  files File[]
+  files FileWithCode[]
 
   owner   User?   @relation(fields: [ownerId], references: [id])
   ownerId String?

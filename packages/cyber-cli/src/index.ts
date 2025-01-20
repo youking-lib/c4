@@ -1,6 +1,7 @@
 import { cac } from 'cac';
-import { login } from './auth';
-import { upload } from './file';
+
+import { login } from './login';
+import { upload } from './upload';
 
 const cyber = cac('c4');
 

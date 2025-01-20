@@ -1,5 +1,5 @@
 import * as z from "zod"
-import { CompleteCode, RelatedCodeModel, CompleteProject, RelatedProjectModel, CompleteFile, RelatedFileModel } from "./index"
+import { CompleteCode, RelatedCodeModel, CompleteProject, RelatedProjectModel, CompleteFile, RelatedFileModel, CompleteFileWithCode, RelatedFileWithCodeModel } from "./index"
 
 export const UserModel = z.object({
   id: z.string(),
@@ -14,6 +14,7 @@ export interface CompleteUser extends z.infer<typeof UserModel> {
   Code: CompleteCode[]
   Projects: CompleteProject[]
   File: CompleteFile[]
+  FileWithCode: CompleteFileWithCode[]
   defaultProject?: CompleteProject | null
 }
 
@@ -26,5 +27,6 @@ export const RelatedUserModel: z.ZodSchema<CompleteUser> = z.lazy(() => UserMode
   Code: RelatedCodeModel.array(),
   Projects: RelatedProjectModel.array(),
   File: RelatedFileModel.array(),
+  FileWithCode: RelatedFileWithCodeModel.array(),
   defaultProject: RelatedProjectModel.nullish(),
 }))

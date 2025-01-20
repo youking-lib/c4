@@ -19,6 +19,18 @@ CREATE TABLE "User" (
 );
 
 -- CreateTable
+CREATE TABLE "FileWithCode" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "codeId" TEXT NOT NULL,
+    "fileId" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "ownerId" TEXT,
+    CONSTRAINT "FileWithCode_codeId_fkey" FOREIGN KEY ("codeId") REFERENCES "Code" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "FileWithCode_fileId_fkey" FOREIGN KEY ("fileId") REFERENCES "File" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "FileWithCode_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "User" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+-- CreateTable
 CREATE TABLE "File" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "name" TEXT NOT NULL,
@@ -33,10 +45,8 @@ CREATE TABLE "File" (
     "lastDownloadedAt" DATETIME,
     "projectId" TEXT,
     "ownerId" TEXT,
-    "codeId" TEXT,
     CONSTRAINT "File_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "Project" ("id") ON DELETE SET NULL ON UPDATE CASCADE,
-    CONSTRAINT "File_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "User" ("id") ON DELETE SET NULL ON UPDATE CASCADE,
-    CONSTRAINT "File_codeId_fkey" FOREIGN KEY ("codeId") REFERENCES "Code" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+    CONSTRAINT "File_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "User" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -82,6 +92,12 @@ CREATE INDEX "User_id_idx" ON "User"("id");
 CREATE INDEX "User_email_idx" ON "User"("email");
 
 -- CreateIndex
+CREATE INDEX "FileWithCode_fileId_codeId_idx" ON "FileWithCode"("fileId", "codeId");
+
+-- CreateIndex
+CREATE INDEX "FileWithCode_ownerId_idx" ON "FileWithCode"("ownerId");
+
+-- CreateIndex
 CREATE INDEX "File_id_idx" ON "File"("id");
 
 -- CreateIndex
@@ -89,9 +105,6 @@ CREATE INDEX "File_ownerId_idx" ON "File"("ownerId");
 
 -- CreateIndex
 CREATE INDEX "File_projectId_idx" ON "File"("projectId");
-
--- CreateIndex
-CREATE INDEX "File_codeId_idx" ON "File"("codeId");
 
 -- CreateIndex
 CREATE INDEX "File_hash_idx" ON "File"("hash");
