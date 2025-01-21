@@ -361,10 +361,24 @@ export type FileDownloadCreateError =
       message?: string;
     };
 
-export interface CodeDetailData {
+export interface CodeListParams {
+  /**
+   * @min 1
+   * @default 1
+   */
+  page?: number;
+  /**
+   * @min 1
+   * @max 100
+   * @default 10
+   */
+  pageSize?: number;
+}
+
+export interface CodeListData {
   status: "success";
   data: {
-    code: {
+    list: {
       id: string;
       code: string;
       slug?: string | null;
@@ -375,26 +389,13 @@ export interface CodeDetailData {
       lastRetrievedAt?: string | null;
       ownerId?: string | null;
       projectId?: string | null;
-    };
-    files: {
-      id: string;
-      name: string;
-      size: number;
-      type: string;
-      disabled: boolean;
-      key: string;
-      hash: string;
-      createdAt: string;
-      updatedAt: string;
-      downloads: number;
-      lastDownloadedAt?: string | null;
-      projectId?: string | null;
-      ownerId?: string | null;
+      files: number;
     }[];
+    total: number;
   };
 }
 
-export type CodeDetailError =
+export type CodeListError =
   | {
       status: "error";
       code: "bad_request";
@@ -509,6 +510,131 @@ export interface CodeCreateData {
 }
 
 export type CodeCreateError =
+  | {
+      status: "error";
+      code: "bad_request";
+      /**
+       * A human readable explanation of what went wrong.
+       * @default "The server cannot or will not process the request due to something that is perceived to be a client error (e.g., malformed request syntax, invalid request message framing, or deceptive request routing)."
+       * @example "The requested resource was not found."
+       */
+      message?: string;
+    }
+  | {
+      status: "error";
+      code: "unauthorized";
+      /**
+       * A human readable explanation of what went wrong.
+       * @default "Although the HTTP standard specifies "unauthorized", semantically this response means "unauthenticated". That is, the client must authenticate itself to get the requested response."
+       * @example "The requested resource was not found."
+       */
+      message?: string;
+    }
+  | {
+      status: "error";
+      code: "forbidden";
+      /**
+       * A human readable explanation of what went wrong.
+       * @default "The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource. Unlike 401 Unauthorized, the client's identity is known to the server."
+       * @example "The requested resource was not found."
+       */
+      message?: string;
+    }
+  | {
+      status: "error";
+      code: "not_found";
+      /**
+       * A human readable explanation of what went wrong.
+       * @default "The server cannot find the requested resource."
+       * @example "The requested resource was not found."
+       */
+      message?: string;
+    }
+  | {
+      status: "error";
+      code: "conflict";
+      /**
+       * A human readable explanation of what went wrong.
+       * @default "This response is sent when a request conflicts with the current state of the server."
+       * @example "The requested resource was not found."
+       */
+      message?: string;
+    }
+  | {
+      status: "error";
+      code: "invite_expired";
+      /**
+       * A human readable explanation of what went wrong.
+       * @default "This response is sent when the requested content has been permanently deleted from server, with no forwarding address."
+       * @example "The requested resource was not found."
+       */
+      message?: string;
+    }
+  | {
+      status: "error";
+      code: "unprocessable_entity";
+      /**
+       * A human readable explanation of what went wrong.
+       * @default "The request was well-formed but was unable to be followed due to semantic errors."
+       * @example "The requested resource was not found."
+       */
+      message?: string;
+    }
+  | {
+      status: "error";
+      code: "rate_limit_exceeded";
+      /**
+       * A human readable explanation of what went wrong.
+       * @default "The user has sent too many requests in a given amount of time ("rate limiting")"
+       * @example "The requested resource was not found."
+       */
+      message?: string;
+    }
+  | {
+      status: "error";
+      code: "internal_server_error";
+      /**
+       * A human readable explanation of what went wrong.
+       * @default "The server has encountered a situation it does not know how to handle."
+       * @example "The requested resource was not found."
+       */
+      message?: string;
+    };
+
+export interface CodeDetailData {
+  status: "success";
+  data: {
+    code: {
+      id: string;
+      code: string;
+      slug?: string | null;
+      expiresAt: string;
+      createdAt: string;
+      updatedAt: string;
+      retrieves: number;
+      lastRetrievedAt?: string | null;
+      ownerId?: string | null;
+      projectId?: string | null;
+    };
+    files: {
+      id: string;
+      name: string;
+      size: number;
+      type: string;
+      disabled: boolean;
+      key: string;
+      hash: string;
+      createdAt: string;
+      updatedAt: string;
+      downloads: number;
+      lastDownloadedAt?: string | null;
+      projectId?: string | null;
+      ownerId?: string | null;
+    }[];
+  };
+}
+
+export type CodeDetailError =
   | {
       status: "error";
       code: "bad_request";

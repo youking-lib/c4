@@ -16,7 +16,13 @@ export const codeSchema = {
       200: {
         ...successSchema(
           z.object({
-            list: z.array(CodeModel),
+            list: z.array(
+              CodeModel.merge(
+                z.object({
+                  files: z.number()
+                })
+              )
+            ),
             total: z.number()
           })
         ),

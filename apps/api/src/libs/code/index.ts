@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid';
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 
 import { checkFiles } from '../file';
 
@@ -11,25 +11,35 @@ export async function listCodes(
     limit: number;
   }
 ) {
-  const codes = await prisma.code.findMany({
-    where: {
-      projectId: options.projectId
-    },
-    skip: options.offset,
-    take: options.limit,
-    orderBy: {
-      createdAt: 'desc'
-    },
-    include: {
-      _count: {
-        select: {
-          files: true
+  const where: Prisma.CodeWhereInput = {
+    projectId: options.projectId
+  };
+
+  const [codes, total] = await Promise.all([
+    prisma.code.findMany({
+      where,
+      skip: options.offset,
+      take: options.limit,
+      orderBy: {
+        createdAt: 'desc'
+      },
+      include: {
+        _count: {
+          select: {
+            files: true
+          }
         }
       }
-    }
-  });
+    }),
+    prisma.code.count({
+      where
+    })
+  ]);
 
-  return codes;
+  return {
+    list: codes,
+    total: total
+  };
 }
 
 export async function retrieveCodeFiles(prisma: PrismaClient, code: string) {

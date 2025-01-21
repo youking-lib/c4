@@ -17,18 +17,12 @@ export const getPageFinder = (page: Page) => {
 };
 
 export function successSchema<T extends z.ZodTypeAny>(data: T) {
-  const result = z.object({ status: z.literal('success') });
+  const result = z.object({ status: z.literal('success'), data });
 
   return {
     content: {
       'application/json': {
-        schema: data
-          ? result.merge(
-              z.object({
-                data
-              })
-            )
-          : result
+        schema: result
       }
     }
   };

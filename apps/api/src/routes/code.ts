@@ -13,7 +13,7 @@ route.openapi(codeSchema.listCodesRoute, async c => {
   const session = await api.getSession();
   const prisma = await api.getPrismaClient();
 
-  const codes = await listCodes(prisma, {
+  const { list, total } = await listCodes(prisma, {
     projectId: session.projectId,
     offset,
     limit
@@ -21,9 +21,17 @@ route.openapi(codeSchema.listCodesRoute, async c => {
 
   return c.json(
     {
-      status: 'success',
-      data: { codes }
-    } as const,
+      status: 'success' as const,
+      data: {
+        list: list.map(item => {
+          return {
+            ...item,
+            files: item._count.files
+          };
+        }),
+        total
+      }
+    },
     200
   );
 });
@@ -38,7 +46,7 @@ route.openapi(codeSchema.retrieveRoute, async c => {
   return c.json(
     {
       status: 'success',
-      data: { code: codeFiles.code, files: codeFiles.files.map(item => item.file) }
+      data: { code: codeFiles, files: codeFiles.files.map(item => item.file) }
     } as const,
     200
   );
