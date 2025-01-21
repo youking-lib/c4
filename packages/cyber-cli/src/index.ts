@@ -1,9 +1,10 @@
 import { cac } from 'cac';
 
+import { list } from './list';
 import { login } from './login';
-import { upload } from './upload';
-import { retrieve } from './retrieve';
 import { logout } from './logout';
+import { retrieve } from './retrieve';
+import { upload } from './upload';
 
 const cyber = cac('c4');
 
@@ -25,9 +26,13 @@ cyber
     upload(filepaths);
   });
 
-cyber.command('list', 'List codes from cyber').action(() => {
-  console.log('list');
-});
+cyber
+  .command('list', 'List codes from cyber')
+  .option('-p, --page', 'Page number')
+  .option('-s, --pageSize', 'Page size')
+  .action((_, options) => {
+    list(options?.page || 1, options?.pageSize || 100);
+  });
 
 cyber
   .command('delete [code]', 'Delete code from cyber')
@@ -46,7 +51,3 @@ cyber.command('logout', 'Logout from Cyber').action(() => {
 
 cyber.help();
 cyber.parse(process.argv);
-
-function sleep(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}

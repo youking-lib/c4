@@ -24,9 +24,11 @@ route.openapi(codeSchema.listCodesRoute, async c => {
       status: 'success' as const,
       data: {
         list: list.map(item => {
+          const { _count, ...rest } = item;
+
           return {
-            ...item,
-            files: item._count.files
+            ...rest,
+            files: _count.files
           };
         }),
         total

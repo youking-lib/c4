@@ -17,7 +17,8 @@
   "devDependencies": {
     "@types/archiver": "^6.0.3",
     "@types/js-yaml": "^4.0.9",
-    "@types/node": "^22.10.5"
+    "@types/node": "^22.10.5",
+    "@types/react": "^18"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.726.1",
@@ -25,13 +26,19 @@
     "@clack/core": "^0.4.1",
     "@clack/prompts": "^0.9.1",
     "@cyber-express/client": "workspace:*",
+    "@tqman/ink-table": "0.0.0-development",
     "archiver": "^7.0.1",
     "cac": "^6.7.14",
+    "cli-table3": "^0.6.5",
     "conf": "^13.1.0",
+    "ink": "^5.1.0",
+    "ink-spinner": "^5.0.0",
+    "ink-table": "^3.1.0",
     "js-md5": "^0.8.3",
     "js-yaml": "^4.1.0",
     "mime": "^4.0.6",
     "nanoid": "^5.0.9",
+    "react": "^18",
     "yaml": "^2.7.0",
     "zod": "^3.24.1"
   }
