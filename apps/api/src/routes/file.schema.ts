@@ -71,20 +71,29 @@ export const fileSchema = {
 
   downloadRoute: createRoute({
     tags: ['file'],
-    method: 'get',
-    path: '/file/download/{fileId}',
+    method: 'post',
+    path: '/file/download',
     request: {
-      params: z.object({
-        fileId: z.string()
-      })
+      body: {
+        content: {
+          'application/json': {
+            schema: z.object({
+              fileIds: z.array(z.string()).max(10)
+            })
+          }
+        }
+      }
     },
     responses: {
       ...errorSchema,
       200: {
         ...successSchema(
-          z.object({
-            downloadUrl: z.string()
-          })
+          z.array(
+            z.object({
+              id: z.string(),
+              downloadUrl: z.string()
+            })
+          )
         ),
         description: 'Download successful'
       }

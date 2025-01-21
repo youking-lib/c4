@@ -27,9 +27,15 @@ export async function retrieve(code: string) {
 
   const { files } = retrieveRes.data.data;
 
-  console.log('files', files);
-
   for (const file of files) {
     // const fileRes = await client.file.fileDownloadDetail(file.fileId);
+    // await downloadFile(file.fileId, file);
   }
+}
+
+async function downloadFile(fileId: string, filename: string) {
+  const client = getClient();
+  const fileRes = await client.file.fileDownloadDetail(fileId);
+
+  console.log('fileRes', fileRes);
 }

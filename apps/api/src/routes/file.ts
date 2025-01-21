@@ -68,14 +68,15 @@ route.openapi(fileSchema.uploadFileRoute, async c => {
 
 route.openapi(fileSchema.downloadRoute, async c => {
   const api = new APIContext(c);
-  const { fileId } = c.req.param();
-  const downloadUrl = await getDownloadUrl(api, fileId);
+  const { fileIds } = c.req.valid('json');
+
+  const downloads = await getDownloadUrl(api, fileIds);
 
   return c.json(
     {
       status: 'success',
       data: {
-        downloadUrl
+        downloads
       }
     } as const,
     200

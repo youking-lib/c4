@@ -4,38 +4,36 @@ import { nanoid } from 'nanoid';
 import { APIContext } from '@/ctx/adapter';
 import { getPreSignedGetUrl, getPreSignedPutUrl } from '../storage';
 
-export async function getDownloadUrl(api: APIContext, fileId: string) {
+export async function getDownloadUrl(api: APIContext, fileIds: string[]) {
   const client = await api.getS3Client();
   const env = await api.getEnv();
   const prisma = await api.getPrismaClient();
-  const file = await prisma.file.findUnique({
-    where: {
-      id: fileId
-    }
-  });
 
-  if (!file) {
-    throw new Error('File not found');
-  }
+  const files = await checkFiles(api, fileIds);
 
-  if (file.disabled) {
-    throw new Error('File is disabled');
-  }
+  const downloads = await Promise.all(
+    files.map(async file => {
+      // stats
+      await prisma.file.update({
+        where: {
+          id: file.id
+        },
+        data: {
+          downloads: {
+            increment: 1
+          },
+          lastDownloadedAt: new Date()
+        }
+      });
 
-  // stats
-  await prisma.file.update({
-    where: {
-      id: fileId
-    },
-    data: {
-      downloads: {
-        increment: 1
-      },
-      lastDownloadedAt: new Date()
-    }
-  });
+      return {
+        id: file.id,
+        downloadUrl: await getPreSignedGetUrl(client, env.S3_BUCKET_NAME, file.key)
+      };
+    })
+  );
 
-  return getPreSignedGetUrl(client, env.S3_BUCKET_NAME, file.key);
+  return downloads;
 }
 
 export async function uploadPreHash(
@@ -103,4 +101,19 @@ export async function getFileByHash(api: APIContext, hash: string) {
   });
 
   return file;
+}
+
+export async function checkFiles(api: APIContext, fileIds: string[]) {
+  const prisma = await api.getPrismaClient();
+  const session = await api.getSession();
+
+  const files = await prisma.file.findMany({
+    where: {
+      id: { in: fileIds },
+      disabled: false,
+      projectId: session.projectId
+    }
+  });
+
+  return files;
 }

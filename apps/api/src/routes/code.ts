@@ -11,7 +11,10 @@ route.openapi(codeSchema.retrieveRoute, async c => {
   const codeFiles = await retrieveCodeFiles(api, codeId);
 
   return c.json(
-    { status: 'success', data: { code: codeFiles.code, files: codeFiles.files } } as const,
+    {
+      status: 'success',
+      data: { code: codeFiles.code, files: codeFiles.files.map(item => item.file) }
+    } as const,
     200
   );
 });

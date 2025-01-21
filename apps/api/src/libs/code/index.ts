@@ -1,6 +1,8 @@
 import { APIContext } from '@/ctx/adapter';
 import { nanoid } from 'nanoid';
 
+import { checkFiles } from '../file';
+
 export async function retrieveCodeFiles(api: APIContext, code: string) {
   const prisma = await api.getPrismaClient();
 
@@ -9,7 +11,11 @@ export async function retrieveCodeFiles(api: APIContext, code: string) {
       code
     },
     include: {
-      files: true
+      files: {
+        include: {
+          file: true
+        }
+      }
     }
   });
 
@@ -36,13 +42,14 @@ export async function retrieveCodeFiles(api: APIContext, code: string) {
 export async function createCode(api: APIContext, fileIds: string[]) {
   const prisma = await api.getPrismaClient();
   const session = await api.getSession();
+  const files = await checkFiles(api, fileIds);
 
   const result = await prisma.code.create({
     data: {
       files: {
-        create: fileIds.map(id => {
+        create: files.map(file => {
           return {
-            fileId: id,
+            fileId: file.id,
             ownerId: session.uid
           };
         })

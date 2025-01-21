@@ -370,9 +370,17 @@ export interface CodeDetailData {
     };
     files: {
       id: string;
-      codeId: string;
-      fileId: string;
+      name: string;
+      size: number;
+      type: string;
+      disabled: boolean;
+      key: string;
+      hash: string;
       createdAt: string;
+      updatedAt: string;
+      downloads: number;
+      lastDownloadedAt?: string | null;
+      projectId?: string | null;
       ownerId?: string | null;
     }[];
   };
