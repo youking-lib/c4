@@ -1,15 +1,15 @@
-import Conf from "conf";
-import { parse, stringify } from "yaml";
+import Conf from 'conf';
+import { parse, stringify } from 'yaml';
 
 export const globalConf = new Conf({
-  projectName: "c4",
-  fileExtension: "yaml",
+  projectName: 'c4',
+  fileExtension: 'yaml',
   serialize: stringify,
-  deserialize: parse,
+  deserialize: parse
 });
 
 export function getAuthorization() {
-  const authorization = globalConf.get("authorization");
+  const authorization = globalConf.get('authorization');
   if (!authorization) {
     return null;
   }
@@ -17,5 +17,9 @@ export function getAuthorization() {
 }
 
 export function setAuthorization(authorization: string) {
-  globalConf.set("authorization", authorization);
+  globalConf.set('authorization', authorization);
+}
+
+export function deleteAuthorization() {
+  globalConf.delete('authorization');
 }

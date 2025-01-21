@@ -2,6 +2,20 @@ import { generateErrorMessage } from 'zod-error';
 import { z } from '@hono/zod-openapi';
 import { ContentfulStatusCode } from 'hono/utils/http-status';
 
+export const PageSchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  pageSize: z.coerce.number().int().min(1).max(100).default(10)
+});
+
+export type Page = z.infer<typeof PageSchema>;
+
+export const getPageFinder = (page: Page) => {
+  return {
+    offset: (page.page - 1) * page.pageSize,
+    limit: page.pageSize
+  };
+};
+
 export function successSchema<T extends z.ZodTypeAny>(data: T) {
   const result = z.object({ status: z.literal('success') });
 

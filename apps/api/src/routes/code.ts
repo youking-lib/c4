@@ -1,14 +1,39 @@
 import { APIContext } from '@/ctx/adapter';
-import { createCode, retrieveCodeFiles } from '@/libs/code';
+import { createCode, listCodes, retrieveCodeFiles } from '@/libs/code';
 
 import { route } from './api';
 import { codeSchema } from './code.schema';
+import { getPageFinder } from './utils';
+
+route.openapi(codeSchema.listCodesRoute, async c => {
+  const api = new APIContext(c);
+  const { page, pageSize } = c.req.valid('query');
+  const { offset, limit } = getPageFinder({ page, pageSize });
+
+  const session = await api.getSession();
+  const prisma = await api.getPrismaClient();
+
+  const codes = await listCodes(prisma, {
+    projectId: session.projectId,
+    offset,
+    limit
+  });
+
+  return c.json(
+    {
+      status: 'success',
+      data: { codes }
+    } as const,
+    200
+  );
+});
 
 route.openapi(codeSchema.retrieveRoute, async c => {
   const api = new APIContext(c);
   const { codeId } = c.req.valid('param');
 
-  const codeFiles = await retrieveCodeFiles(api, codeId);
+  const prisma = await api.getPrismaClient();
+  const codeFiles = await retrieveCodeFiles(prisma, codeId);
 
   return c.json(
     {
@@ -23,7 +48,13 @@ route.openapi(codeSchema.createCodeRoute, async c => {
   const api = new APIContext(c);
   const { fileIds } = c.req.valid('json');
 
-  const code = await createCode(api, fileIds);
+  const session = await api.getSession();
+  const prisma = await api.getPrismaClient();
+  const code = await createCode(prisma, {
+    fileIds,
+    projectId: session.projectId,
+    ownerId: session.uid
+  });
 
   return c.json(
     {

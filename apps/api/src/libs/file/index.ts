@@ -1,15 +1,23 @@
 import path from 'node:path';
 import { nanoid } from 'nanoid';
+import { PrismaClient } from '@prisma/client';
+import { S3Client } from '@aws-sdk/client-s3';
 
-import { APIContext } from '@/ctx/adapter';
 import { getPreSignedGetUrl, getPreSignedPutUrl } from '../storage';
 
-export async function getDownloadUrl(api: APIContext, fileIds: string[]) {
-  const client = await api.getS3Client();
-  const env = await api.getEnv();
-  const prisma = await api.getPrismaClient();
-
-  const files = await checkFiles(api, fileIds);
+export async function getDownloadUrl(
+  prisma: PrismaClient,
+  client: S3Client,
+  bucket: string,
+  options: {
+    fileIds: string[];
+    projectId: string;
+  }
+) {
+  const files = await checkFiles(prisma, {
+    fileIds: options.fileIds,
+    projectId: options.projectId
+  });
 
   const downloads = await Promise.all(
     files.map(async file => {
@@ -28,7 +36,7 @@ export async function getDownloadUrl(api: APIContext, fileIds: string[]) {
 
       return {
         id: file.id,
-        downloadUrl: await getPreSignedGetUrl(client, env.S3_BUCKET_NAME, file.key)
+        downloadUrl: await getPreSignedGetUrl(client, bucket, file.key)
       };
     })
   );
@@ -37,12 +45,17 @@ export async function getDownloadUrl(api: APIContext, fileIds: string[]) {
 }
 
 export async function uploadPreHash(
-  api: APIContext,
-  options: { filename: string; type: string; size: number; hash: string }
+  prisma: PrismaClient,
+  options: {
+    filename: string;
+    type: string;
+    size: number;
+    hash: string;
+    projectId: string;
+    ownerId: string;
+  }
 ) {
-  const prisma = await api.getPrismaClient();
-  const existFile = await getFileByHash(api, options.hash);
-  const session = await api.getSession();
+  const existFile = await getFileByHash(prisma, options.hash);
 
   if (existFile) {
     const file = await prisma.file.create({
@@ -52,8 +65,8 @@ export async function uploadPreHash(
         name: options.filename,
         size: options.size,
         type: options.type,
-        projectId: session.projectId,
-        ownerId: session.uid
+        projectId: options.projectId,
+        ownerId: options.ownerId
       }
     });
 
@@ -66,34 +79,24 @@ export async function uploadPreHash(
 }
 
 export async function uploadPreSign(
-  api: APIContext,
+  client: S3Client,
+  bucket: string,
   options: {
     filename: string;
+    projectId: string;
   }
 ) {
-  const client = await api.getS3Client();
-  const env = await api.getEnv();
-  const session = await api.getSession();
-
-  const key = `files/${session.projectId}/${nanoid()}${path.extname(options.filename)}`;
+  const key = `files/${options.projectId}/${nanoid()}${path.extname(options.filename)}`;
 
   console.log(`pre-signed url: ${key}`);
 
   return {
     key,
-    preSignedUrl: await getPreSignedPutUrl(client, env.S3_BUCKET_NAME, key)
+    preSignedUrl: await getPreSignedPutUrl(client, bucket, key)
   };
 }
 
-export async function getPreSignedUrl(api: APIContext, key: string) {
-  const client = await api.getS3Client();
-  const env = await api.getEnv();
-
-  return getPreSignedGetUrl(client, env.S3_BUCKET_NAME, key);
-}
-
-export async function getFileByHash(api: APIContext, hash: string) {
-  const prisma = await api.getPrismaClient();
+export async function getFileByHash(prisma: PrismaClient, hash: string) {
   const file = await prisma.file.findFirst({
     where: {
       hash
@@ -103,15 +106,18 @@ export async function getFileByHash(api: APIContext, hash: string) {
   return file;
 }
 
-export async function checkFiles(api: APIContext, fileIds: string[]) {
-  const prisma = await api.getPrismaClient();
-  const session = await api.getSession();
-
+export async function checkFiles(
+  prisma: PrismaClient,
+  options: {
+    fileIds: string[];
+    projectId: string;
+  }
+) {
   const files = await prisma.file.findMany({
     where: {
-      id: { in: fileIds },
+      id: { in: options.fileIds },
       disabled: false,
-      projectId: session.projectId
+      projectId: options.projectId
     }
   });
 

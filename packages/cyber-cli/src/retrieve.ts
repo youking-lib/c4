@@ -3,7 +3,7 @@ import path from 'node:path';
 import { intro, log, outro, spinner } from '@clack/prompts';
 import { getClient } from './libs/client';
 
-export async function retrieve(code: string) {
+export async function retrieve(code: string, output: string) {
   intro(`Retrieving`);
 
   const client = getClient();
@@ -23,7 +23,7 @@ export async function retrieve(code: string) {
   for (const file of files) {
     loading.message(`Downloading ${file.name}`);
 
-    await downloadFile(file.id, file.name);
+    await downloadFile(output, file.id, file.name);
   }
 
   loading.stop('Downloaded files');
@@ -31,7 +31,7 @@ export async function retrieve(code: string) {
   outro('Retrieved files successfully');
 }
 
-async function downloadFile(fileId: string, filename: string) {
+async function downloadFile(output: string, fileId: string, filename: string) {
   const client = getClient();
   const fileRes = await client.file.fileDownloadCreate({ fileIds: [fileId] });
 
@@ -47,9 +47,9 @@ async function downloadFile(fileId: string, filename: string) {
 
     const buffer = await response.arrayBuffer();
     const arrayBuffer = new Uint8Array(buffer);
-    const output = path.join(process.cwd(), filename);
+    const dest = path.join(output, filename);
 
-    await fs.writeFile(output, arrayBuffer);
+    await fs.writeFile(dest, arrayBuffer);
   } catch (error) {
     log.error(error);
   }

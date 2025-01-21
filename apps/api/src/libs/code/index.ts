@@ -1,11 +1,38 @@
-import { APIContext } from '@/ctx/adapter';
 import { nanoid } from 'nanoid';
+import { PrismaClient } from '@prisma/client';
 
 import { checkFiles } from '../file';
 
-export async function retrieveCodeFiles(api: APIContext, code: string) {
-  const prisma = await api.getPrismaClient();
+export async function listCodes(
+  prisma: PrismaClient,
+  options: {
+    projectId: string;
+    offset: number;
+    limit: number;
+  }
+) {
+  const codes = await prisma.code.findMany({
+    where: {
+      projectId: options.projectId
+    },
+    skip: options.offset,
+    take: options.limit,
+    orderBy: {
+      createdAt: 'desc'
+    },
+    include: {
+      _count: {
+        select: {
+          files: true
+        }
+      }
+    }
+  });
 
+  return codes;
+}
+
+export async function retrieveCodeFiles(prisma: PrismaClient, code: string) {
   const result = await prisma.code.findUnique({
     where: {
       code
@@ -39,10 +66,18 @@ export async function retrieveCodeFiles(api: APIContext, code: string) {
   return result;
 }
 
-export async function createCode(api: APIContext, fileIds: string[]) {
-  const prisma = await api.getPrismaClient();
-  const session = await api.getSession();
-  const files = await checkFiles(api, fileIds);
+export async function createCode(
+  prisma: PrismaClient,
+  options: {
+    fileIds: string[];
+    projectId: string;
+    ownerId: string;
+  }
+) {
+  const files = await checkFiles(prisma, {
+    fileIds: options.fileIds,
+    projectId: options.projectId
+  });
 
   const result = await prisma.code.create({
     data: {
@@ -50,15 +85,15 @@ export async function createCode(api: APIContext, fileIds: string[]) {
         create: files.map(file => {
           return {
             fileId: file.id,
-            ownerId: session.uid
+            ownerId: options.ownerId
           };
         })
       },
       code: nanoid(6),
       slug: nanoid(10),
       expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
-      projectId: session.projectId,
-      ownerId: session.uid
+      projectId: options.projectId,
+      ownerId: options.ownerId
     }
   });
 

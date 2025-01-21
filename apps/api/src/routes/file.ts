@@ -6,8 +6,20 @@ import { fileSchema } from './file.schema';
 
 route.openapi(fileSchema.uploadCheckRoute, async c => {
   const api = new APIContext(c);
-  const { filename, type, size, hash } = await c.req.json();
-  const file = await uploadPreHash(api, { filename, type, size, hash });
+  const { filename, type, size, hash } = c.req.valid('json');
+
+  const session = await api.getSession();
+  const prisma = await api.getPrismaClient();
+  const env = await api.getEnv();
+
+  const file = await uploadPreHash(prisma, {
+    filename,
+    type,
+    size,
+    hash,
+    projectId: session.projectId,
+    ownerId: session.uid
+  });
 
   if (file) {
     return c.json(
@@ -21,7 +33,10 @@ route.openapi(fileSchema.uploadCheckRoute, async c => {
     );
   }
 
-  const { key, preSignedUrl } = await uploadPreSign(api, { filename });
+  const { key, preSignedUrl } = await uploadPreSign(await api.getS3Client(), env.S3_BUCKET_NAME, {
+    filename,
+    projectId: session.projectId
+  });
 
   return c.json(
     {
@@ -70,7 +85,14 @@ route.openapi(fileSchema.downloadRoute, async c => {
   const api = new APIContext(c);
   const { fileIds } = c.req.valid('json');
 
-  const downloads = await getDownloadUrl(api, fileIds);
+  const env = await api.getEnv();
+  const session = await api.getSession();
+  const prisma = await api.getPrismaClient();
+
+  const downloads = await getDownloadUrl(prisma, await api.getS3Client(), env.S3_BUCKET_NAME, {
+    fileIds,
+    projectId: session.projectId
+  });
 
   return c.json(
     {

@@ -1,8 +1,30 @@
 import { createRoute, z } from '@hono/zod-openapi';
+
 import { CodeModel, FileModel } from './dto';
-import { errorSchema, successSchema } from './utils';
+import { errorSchema, PageSchema, successSchema } from './utils';
 
 export const codeSchema = {
+  listCodesRoute: createRoute({
+    tags: ['code'],
+    method: 'get',
+    path: '/code',
+    request: {
+      query: PageSchema
+    },
+    responses: {
+      ...errorSchema,
+      200: {
+        ...successSchema(
+          z.object({
+            list: z.array(CodeModel),
+            total: z.number()
+          })
+        ),
+        description: 'List codes successful'
+      }
+    }
+  }),
+
   retrieveRoute: createRoute({
     tags: ['code'],
     method: 'get',
