@@ -88,12 +88,14 @@ export const fileSchema = {
       ...errorSchema,
       200: {
         ...successSchema(
-          z.array(
-            z.object({
-              id: z.string(),
-              downloadUrl: z.string()
-            })
-          )
+          z.object({
+            downloads: z.array(
+              z.object({
+                id: z.string(),
+                downloadUrl: z.string()
+              })
+            )
+          })
         ),
         description: 'Download successful'
       }

@@ -255,6 +255,9 @@ importers:
       archiver:
         specifier: ^7.0.1
         version: 7.0.1
+      axios:
+        specifier: ^1.7.9
+        version: 1.7.9
       cac:
         specifier: ^6.7.14
         version: 6.7.14

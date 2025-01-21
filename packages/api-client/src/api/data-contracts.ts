@@ -254,14 +254,22 @@ export type FileUploadCreateError =
       message?: string;
     };
 
-export interface FileDownloadDetailData {
+export interface FileDownloadCreatePayload {
+  /** @maxItems 10 */
+  fileIds: string[];
+}
+
+export interface FileDownloadCreateData {
   status: "success";
   data: {
-    downloadUrl: string;
+    downloads: {
+      id: string;
+      downloadUrl: string;
+    }[];
   };
 }
 
-export type FileDownloadDetailError =
+export type FileDownloadCreateError =
   | {
       status: "error";
       code: "bad_request";

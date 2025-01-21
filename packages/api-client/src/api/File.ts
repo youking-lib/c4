@@ -10,8 +10,9 @@
  */
 
 import {
-  FileDownloadDetailData,
-  FileDownloadDetailError,
+  FileDownloadCreateData,
+  FileDownloadCreateError,
+  FileDownloadCreatePayload,
   FileUploadCheckCreateData,
   FileUploadCheckCreateError,
   FileUploadCheckCreatePayload,
@@ -268,10 +269,10 @@ export class File<SecurityDataType = unknown> {
  * No description
  *
  * @tags file
- * @name FileDownloadDetail
- * @request GET:/api/file/download/{fileId}
+ * @name FileDownloadCreate
+ * @request POST:/api/file/download
  * @secure
- * @response `200` `FileDownloadDetailData` Download successful
+ * @response `200` `FileDownloadCreateData` Download successful
  * @response `400` `{
     status: "error",
     code: "bad_request",
@@ -372,11 +373,13 @@ export class File<SecurityDataType = unknown> {
 
 }` The server has encountered a situation it does not know how to handle.
  */
-  fileDownloadDetail = (fileId: string, params: RequestParams = {}) =>
-    this.http.request<FileDownloadDetailData, FileDownloadDetailError>({
-      path: `/api/file/download/${fileId}`,
-      method: "GET",
+  fileDownloadCreate = (data: FileDownloadCreatePayload, params: RequestParams = {}) =>
+    this.http.request<FileDownloadCreateData, FileDownloadCreateError>({
+      path: `/api/file/download`,
+      method: "POST",
+      body: data,
       secure: true,
+      type: ContentType.Json,
       format: "json",
       ...params,
     });
