@@ -1,5 +1,5 @@
 {
-  "name": "@cyber-express/client",
+  "name": "vsh-client",
   "private": true,
   "version": "0.0.1",
   "type": "module",

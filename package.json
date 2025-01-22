@@ -1,10 +1,11 @@
 {
-  "name": "cyber-express",
+  "name": "vsh",
   "private": true,
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev --filter=web...",
     "dev:api": "turbo dev --filter=api...",
+    "dev:cli": "turbo dev --filter=vsh-cli...",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },

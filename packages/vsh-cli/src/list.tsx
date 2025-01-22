@@ -1,7 +1,7 @@
 import Table from 'cli-table3';
 import { getClient } from './libs/client';
 
-export async function list(page: number = 1, pageSize: number = 100) {
+export async function list(page: number = 1, pageSize: number = 10) {
   const res = await getCodes(page, pageSize);
 
   const table = new Table({

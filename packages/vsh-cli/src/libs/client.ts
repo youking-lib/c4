@@ -1,4 +1,4 @@
-import { createClient } from '@cyber-express/client';
+import { createClient } from 'vsh-client';
 import { getAuthorization } from './conf';
 
 export function getClient() {

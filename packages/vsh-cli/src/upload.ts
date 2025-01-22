@@ -1,16 +1,15 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { nanoid } from 'nanoid';
-import { intro, log, outro, spinner } from '@clack/prompts';
+import color from 'picocolors';
+import { intro, log, outro, spinner, note } from '@clack/prompts';
 
 import { archive } from './libs/utils';
 import { uploadFile } from './libs/s3';
 import { getClient } from './libs/client';
 
-// upload(['./README.md', './src', './node_modules', './package.json']);
-
 export async function upload(paths: string[]) {
-  intro(`Uploading`);
+  intro(`Upload files to Cyber`);
 
   const cwd = process.cwd();
   const output = path.join(process.cwd(), '.temp');
@@ -55,8 +54,7 @@ export async function upload(paths: string[]) {
     }
   }
 
-  loading.stop();
-  log.success(`Uploaded ${fileIds.length} files`);
+  loading.stop(`Uploaded ${fileIds.length} files`);
 
   const client = getClient();
 
@@ -75,9 +73,9 @@ export async function upload(paths: string[]) {
     ? `https://c4.top/${code.slug}?code=${code.code}`
     : `https://c4.top/${code.code}`;
 
-  log.success(
-    `Successfully create a code \`${code.code}\` for your files, share it to your friends:`
-  );
+  outro(`Cyber Code: ${color.bgCyan(color.black(code.code))}`);
+
+  intro(`Next step, share it to your friends:`);
 
   log.step(`1. Open link in your browser: ${retrieveUrl}`);
   log.step(`2. Retrieve it in terminal: \`c4 ${code.code}\``);
