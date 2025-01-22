@@ -1,7 +1,7 @@
 {
   "name": "api",
   "private": true,
-  "description": "Cyber API",
+  "description": "VSH API",
   "main": "index.js",
   "scripts": {
     "dev": "prisma generate && wrangler dev",

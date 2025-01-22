@@ -1,5 +1,5 @@
 #:schema node_modules/wrangler/config-schema.json
-name = "cyber-api"
+name = "vsh-api"
 main = "src/index.ts"
 compatibility_date = "2024-11-06"
 compatibility_flags = ["nodejs_compat"]
@@ -10,7 +10,7 @@ enabled = true
 
 [[d1_databases]]
 binding = "database"
-database_name = "cyber-express"
+database_name = "vsh-express"
 database_id = "d913cfba-0bcd-4823-a149-ecb24e79d52c"
 
 # Workers Logs

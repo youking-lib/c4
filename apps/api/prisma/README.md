@@ -19,6 +19,6 @@ pnpm prisma migrate diff --from-local-d1 --to-schema-datamodel ./prisma/schema.p
 3. apply
 
 ```bash
-pnpm wrangler d1 migrations apply cyber-express --local
-pnpm wrangler d1 migrations apply cyber-express --remote
+pnpm wrangler d1 migrations apply vsh-express --local
+pnpm wrangler d1 migrations apply vsh-express --remote
 ```

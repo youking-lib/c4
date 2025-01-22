@@ -5,7 +5,7 @@ import { getClient } from './libs/client';
 import { setAuthorization } from './libs/conf';
 
 export async function login() {
-  intro(`Login to Cyber`);
+  intro(`Login to vsh`);
 
   const email = await text({
     message: 'Please enter your email',

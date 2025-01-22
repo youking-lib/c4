@@ -9,7 +9,7 @@ import { uploadFile } from './libs/s3';
 import { getClient } from './libs/client';
 
 export async function upload(paths: string[]) {
-  intro(`Upload files to Cyber`);
+  intro(`Upload files to vsh`);
 
   const cwd = process.cwd();
   const output = path.join(process.cwd(), '.temp');
@@ -73,7 +73,7 @@ export async function upload(paths: string[]) {
     ? `https://c4.top/${code.slug}?code=${code.code}`
     : `https://c4.top/${code.code}`;
 
-  outro(`Cyber Code: ${color.bgCyan(color.black(code.code))}`);
+  outro(`Code: ${color.bgCyan(color.black(code.code))}`);
 
   intro(`Next step, share it to your friends:`);
 

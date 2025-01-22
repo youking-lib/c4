@@ -1,7 +1,7 @@
-# Cyber CLI
+# VSH CLI
 
 ## File Upload
 
 ```bash
-cyber-cli upload ./README.md
+vsh upload ./README.md
 ```

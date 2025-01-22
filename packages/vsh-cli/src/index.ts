@@ -8,19 +8,19 @@ import { upload } from './upload';
 
 const vsh = new Command();
 
-vsh.name('vsh').description('Cyber CLI').version('0.0.1');
+vsh.name('vsh').description('Transfer files easily in cyber space').version('0.0.1');
 
 vsh
   .command('upload')
   .argument('<dirs...>')
-  .description('Upload files to Cyber, eg: vsh upload ./some/file.txt')
+  .description('Upload files to vsh, eg: vsh upload ./some/file.txt')
   .action(dirs => {
     upload(dirs);
   });
 
 vsh
   .command('list')
-  .description('List codes from Cyber, eg: vsh list')
+  .description('List codes from vsh, eg: vsh list')
   .option('-p, --page', 'Page number, default is 1')
   .option('-s, --pageSize', 'Page size, default is 10')
   .action((_, options) => {
@@ -29,7 +29,7 @@ vsh
 
 vsh
   .command('delete')
-  .description('Delete code from Cyber, eg: vsh delete 123456')
+  .description('Delete code, eg: vsh delete 123456')
   .argument('<code>')
   .action((code, options) => {
     // deleteCode(code);
@@ -37,14 +37,14 @@ vsh
 
 vsh
   .command('login')
-  .description('Login to Cyber, eg: vsh login')
+  .description('Login to vsh, eg: vsh login')
   .action(() => {
     login();
   });
 
 vsh
   .command('logout')
-  .description('Logout from Cyber, eg: vsh logout')
+  .description('Logout from vsh, eg: vsh logout')
   .action(() => {
     logout();
   });
