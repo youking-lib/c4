@@ -72,11 +72,9 @@ route.openapi(fileSchema.uploadFileRoute, async c => {
 
   return c.json(
     {
-      status: 'success',
-      data: {
-        file
-      }
-    } as const,
+      status: 'success' as const,
+      data: file
+    },
     200
   );
 });
