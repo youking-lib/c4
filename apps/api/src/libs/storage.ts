@@ -28,10 +28,13 @@ export async function getPreSignedGetUrl(client: S3Client, bucket: string, key: 
   return preSignedUrl;
 }
 
-export async function getPreSignedPutUrl(client: S3Client, bucket: string, key: string) {
+export async function getPreSignedPutUrl(
+  client: S3Client,
+  options: { bucket: string; key: string; md5: string }
+) {
   const preSignedUrl = await getSignedUrl(
     client,
-    new PutObjectCommand({ Bucket: bucket, Key: key }),
+    new PutObjectCommand({ Bucket: options.bucket, Key: options.key, ContentMD5: options.md5 }),
     { expiresIn: 3600 }
   );
 

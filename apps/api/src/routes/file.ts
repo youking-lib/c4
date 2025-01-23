@@ -1,5 +1,5 @@
 import { APIContext } from '@/ctx/adapter';
-import { getDownloadUrl, uploadPreHash, uploadPreSign } from '@/libs/file';
+import { getDownloadUrl, getFileByHash, uploadPreSign } from '@/libs/file';
 
 import { route } from './api';
 import { fileSchema } from './file.schema';
@@ -8,25 +8,29 @@ route.openapi(fileSchema.uploadCheckRoute, async c => {
   const api = new APIContext(c);
   const { filename, type, size, hash } = c.req.valid('json');
 
+  const env = await api.getEnv();
   const session = await api.getSession();
   const prisma = await api.getPrismaClient();
-  const env = await api.getEnv();
+  const existHashFile = await getFileByHash(prisma, hash);
 
-  const file = await uploadPreHash(prisma, {
-    filename,
-    type,
-    size,
-    hash,
-    projectId: session.projectId,
-    ownerId: session.uid
-  });
+  if (existHashFile) {
+    const newFile = await prisma.file.create({
+      data: {
+        key: existHashFile.key,
+        name: filename,
+        type,
+        size,
+        hash,
+        projectId: session.projectId,
+        ownerId: session.uid
+      }
+    });
 
-  if (file) {
     return c.json(
       {
         status: 'success',
         data: {
-          file
+          file: newFile
         }
       } as const,
       200
@@ -35,6 +39,7 @@ route.openapi(fileSchema.uploadCheckRoute, async c => {
 
   const { key, preSignedUrl } = await uploadPreSign(await api.getS3Client(), env.S3_BUCKET_NAME, {
     filename,
+    md5: hash,
     projectId: session.projectId
   });
 

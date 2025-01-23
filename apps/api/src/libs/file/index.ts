@@ -44,44 +44,11 @@ export async function getDownloadUrl(
   return downloads;
 }
 
-export async function uploadPreHash(
-  prisma: PrismaClient,
-  options: {
-    filename: string;
-    type: string;
-    size: number;
-    hash: string;
-    projectId: string;
-    ownerId: string;
-  }
-) {
-  const existFile = await getFileByHash(prisma, options.hash);
-
-  if (existFile) {
-    const file = await prisma.file.create({
-      data: {
-        key: existFile.key,
-        hash: options.hash,
-        name: options.filename,
-        size: options.size,
-        type: options.type,
-        projectId: options.projectId,
-        ownerId: options.ownerId
-      }
-    });
-
-    console.log(`pre-hash file created: ${file.id}`);
-
-    return file;
-  }
-
-  return null;
-}
-
 export async function uploadPreSign(
   client: S3Client,
   bucket: string,
   options: {
+    md5: string;
     filename: string;
     projectId: string;
   }
@@ -92,7 +59,11 @@ export async function uploadPreSign(
 
   return {
     key,
-    preSignedUrl: await getPreSignedPutUrl(client, bucket, key)
+    preSignedUrl: await getPreSignedPutUrl(client, {
+      bucket,
+      key,
+      md5: options.md5
+    })
   };
 }
 
