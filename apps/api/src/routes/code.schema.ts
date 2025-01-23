@@ -54,6 +54,28 @@ export const codeSchema = {
     }
   }),
 
+  revokeRoute: createRoute({
+    tags: ['code'],
+    method: 'delete',
+    path: '/code/{codeId}',
+    request: {
+      params: z.object({
+        codeId: z.string()
+      })
+    },
+    responses: {
+      ...errorSchema,
+      200: {
+        ...successSchema(
+          z.object({
+            code: CodeModel
+          })
+        ),
+        description: 'Revoke code successful'
+      }
+    }
+  }),
+
   createCodeRoute: createRoute({
     tags: ['code'],
     method: 'post',

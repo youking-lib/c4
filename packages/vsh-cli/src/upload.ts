@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { nanoid } from 'nanoid';
 import color from 'picocolors';
-import { intro, log, outro, spinner, note } from '@clack/prompts';
+import { intro, log, outro, spinner } from '@clack/prompts';
 
 import { archive } from './libs/utils';
 import { uploadFile } from './libs/s3';
@@ -40,12 +40,11 @@ export async function upload(paths: string[]) {
       loading.message(`Uploaded ${filename}`);
     } else if (stats.isDirectory()) {
       const filename = `${path.basename(item)}_archive.zip`;
+      const abspath = path.resolve(cwd, item);
 
       loading.message(`Start uploading ${filename}`);
 
-      const abspath = path.resolve(cwd, item);
       const tempPath = await prepareDir(output, abspath);
-
       const file = await uploadFile(tempPath, filename);
 
       fileIds.push(file.id);
@@ -70,15 +69,15 @@ export async function upload(paths: string[]) {
   const code = codeRes.data.data.code;
 
   const retrieveUrl = code.slug
-    ? `https://c4.top/${code.slug}?code=${code.code}`
-    : `https://c4.top/${code.code}`;
+    ? `https://vsh.cc/${code.slug}?code=${code.code}`
+    : `https://vsh.cc/${code.code}`;
 
   outro(`Code: ${color.bgCyan(color.black(code.code))}`);
 
   intro(`Next step, share it to your friends:`);
 
   log.step(`1. Open link in your browser: ${retrieveUrl}`);
-  log.step(`2. Retrieve it in terminal: \`c4 ${code.code}\``);
+  log.step(`2. Retrieve it in terminal: \`vsh ${code.code}\``);
 
   outro(`Congratulations!`);
 }

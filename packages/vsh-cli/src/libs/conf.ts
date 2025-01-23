@@ -2,7 +2,7 @@ import Conf from 'conf';
 import { parse, stringify } from 'yaml';
 
 export const globalConf = new Conf({
-  projectName: 'c4',
+  projectName: 'vsh',
   fileExtension: 'yaml',
   serialize: stringify,
   deserialize: parse

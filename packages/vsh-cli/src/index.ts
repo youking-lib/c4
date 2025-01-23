@@ -5,6 +5,8 @@ import { login } from './login';
 import { logout } from './logout';
 import { retrieve } from './retrieve';
 import { upload } from './upload';
+import { revokeCode } from './revoke';
+import { whoami } from './whoami';
 
 const vsh = new Command();
 
@@ -15,7 +17,7 @@ vsh
   .argument('<dirs...>')
   .description('Upload files to vsh, eg: vsh upload ./some/file.txt')
   .action(dirs => {
-    upload(dirs);
+    upload(dirs).catch(console.error);
   });
 
 vsh
@@ -28,11 +30,11 @@ vsh
   });
 
 vsh
-  .command('delete')
-  .description('Delete code, eg: vsh delete 123456')
+  .command('revoke')
   .argument('<code>')
-  .action((code, options) => {
-    // deleteCode(code);
+  .description('Revoke code, eg: vsh revoke 123456')
+  .action(code => {
+    revokeCode(code);
   });
 
 vsh
@@ -53,7 +55,7 @@ vsh
   .command('whoami')
   .description('Who am I, eg: vsh whoami')
   .action(() => {
-    // whoami();
+    whoami();
   });
 
 vsh

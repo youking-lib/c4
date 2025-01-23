@@ -84,9 +84,9 @@ export function errorSchemaFactory<T extends z.ZodTypeAny>(code: T, description:
             description: 'A human readable explanation of what went wrong.',
             example: 'The requested resource was not found.'
           })
-          // doc_url: z.string().nullish().default('https://c4.top/docs').openapi({
+          // doc_url: z.string().nullish().default('https://vsh.cc/docs').openapi({
           //   description: 'A link to our documentation with more details about this error code',
-          //   example: `https://c4.top/docs`
+          //   example: `https://vsh.cc/docs`
           // })
         })
       }
@@ -101,9 +101,9 @@ const ErrorSchema = z.object({
     description: 'A human readable explanation of what went wrong.',
     example: 'The request is invalid.'
   }),
-  doc_url: z.string().default('https://c4.top/docs').openapi({
+  doc_url: z.string().default('https://vsh.cc/docs').openapi({
     description: 'A link to our documentation with more details about this error code',
-    example: `https://c4.top/docs`
+    example: `https://vsh.cc/docs`
   })
 });
 

@@ -1,7 +1,7 @@
 import mime from 'mime';
 import fs from 'node:fs';
 import path from 'node:path';
-import { md5 } from 'js-md5';
+import crypto from 'node:crypto';
 import { log } from '@clack/prompts';
 
 import { getClient } from './client';
@@ -10,17 +10,17 @@ export async function uploadFile(filepath: string, filename: string) {
   const client = getClient();
 
   const buffer = fs.readFileSync(filepath, {
-    encoding: 'utf8'
+    encoding: 'base64'
   });
 
-  const hash = md5(buffer);
+  const hash = crypto.createHash('md5').update(buffer).digest('base64');
   const type = mime.getType(filepath) || path.extname(filepath);
 
   const check = await client.file.fileUploadCheckCreate({
     type,
     filename,
     size: buffer.length,
-    hash: hash
+    hash
   });
 
   if (check.error) {
@@ -34,6 +34,7 @@ export async function uploadFile(filepath: string, filename: string) {
   const result = await fetch(check.data.data.preSignedUrl, {
     method: 'PUT',
     headers: {
+      'Content-MD5': hash,
       'Content-Type': type
     },
     body: buffer

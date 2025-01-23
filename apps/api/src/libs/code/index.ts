@@ -50,7 +50,12 @@ export async function retrieveCodeFiles(prisma: PrismaClient, code: string) {
     include: {
       files: {
         include: {
-          file: true
+          file: {
+            omit: {
+              hash: true,
+              key: true
+            }
+          }
         }
       }
     }
@@ -74,6 +79,14 @@ export async function retrieveCodeFiles(prisma: PrismaClient, code: string) {
   });
 
   return result;
+}
+
+export async function revokeCode(prisma: PrismaClient, codeId: string) {
+  return prisma.code.delete({
+    where: {
+      id: codeId
+    }
+  });
 }
 
 export async function createCode(

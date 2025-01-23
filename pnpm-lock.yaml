@@ -26,6 +26,9 @@ importers:
       typescript:
         specifier: ^5.7.2
         version: 5.7.3
+      vsh-cli:
+        specifier: workspace:*
+        version: link:packages/vsh-cli
 
   apps/api:
     dependencies:

@@ -1,5 +1,5 @@
 import { APIContext } from '@/ctx/adapter';
-import { createCode, listCodes, retrieveCodeFiles } from '@/libs/code';
+import { createCode, listCodes, retrieveCodeFiles, revokeCode } from '@/libs/code';
 
 import { route } from './api';
 import { codeSchema } from './code.schema';
@@ -49,6 +49,22 @@ route.openapi(codeSchema.retrieveRoute, async c => {
     {
       status: 'success',
       data: { code: codeFiles, files: codeFiles.files.map(item => item.file) }
+    } as const,
+    200
+  );
+});
+
+route.openapi(codeSchema.revokeRoute, async c => {
+  const api = new APIContext(c);
+  const { codeId } = c.req.valid('param');
+
+  const prisma = await api.getPrismaClient();
+  const code = await revokeCode(prisma, codeId);
+
+  return c.json(
+    {
+      status: 'success',
+      data: { code }
     } as const,
     200
   );

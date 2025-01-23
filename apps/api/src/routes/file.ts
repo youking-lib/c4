@@ -23,6 +23,10 @@ route.openapi(fileSchema.uploadCheckRoute, async c => {
         hash,
         projectId: session.projectId,
         ownerId: session.uid
+      },
+      omit: {
+        hash: true,
+        key: true
       }
     });
 
@@ -72,6 +76,10 @@ route.openapi(fileSchema.uploadFileRoute, async c => {
       hash,
       projectId: session.projectId,
       ownerId: session.uid
+    },
+    omit: {
+      hash: true,
+      key: true
     }
   });
 
