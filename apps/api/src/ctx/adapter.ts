@@ -1,5 +1,4 @@
 import { Context } from 'hono';
-import { createClerkClient } from '@clerk/backend';
 import { StackServerInterface } from '@stackframe/stack-shared';
 import { getS3Client } from '@/libs/storage';
 
