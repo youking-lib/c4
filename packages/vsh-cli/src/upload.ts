@@ -7,6 +7,7 @@ import { intro, log, outro, spinner } from '@clack/prompts';
 import { archive } from './libs/utils';
 import { uploadFile } from './libs/s3';
 import { getClient } from './libs/client';
+import { getBaseUrl } from './libs/conf';
 
 export async function upload(paths: string[]) {
   intro(`Upload files to vsh`);
@@ -69,8 +70,8 @@ export async function upload(paths: string[]) {
   const code = codeRes.data.data.code;
 
   const retrieveUrl = code.slug
-    ? `https://vsh.cc/${code.slug}?code=${code.code}`
-    : `https://vsh.cc/${code.code}`;
+    ? `${getBaseUrl()}/${code.slug}?code=${code.code}`
+    : `${getBaseUrl()}/${code.code}`;
 
   outro(`Code: ${color.bgCyan(color.black(code.code))}`);
 
