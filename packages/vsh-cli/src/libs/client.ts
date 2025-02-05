@@ -7,14 +7,3 @@ export function getClient() {
     token: getAuthorization()
   });
 }
-
-export async function getSession() {
-  const client = getClient();
-  const user = await client.auth.authMeList();
-
-  if (user.error) {
-    throw new Error('Failed to get session');
-  }
-
-  return user.data.data;
-}

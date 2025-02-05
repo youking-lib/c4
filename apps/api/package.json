@@ -21,7 +21,6 @@
     "@hono/zod-openapi": "^0.18.3",
     "@prisma/adapter-d1": "^6.2.1",
     "@prisma/client": "^6.2.1",
-    "@stackframe/stack": "^2.7.5",
     "@stackframe/stack-shared": "^2.7.5",
     "hono": "^4.6.16",
     "jose": "^5.9.6",
