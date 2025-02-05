@@ -45,34 +45,4 @@ export class APIContext {
       secretServerKey: env.STACK_SECRET_SERVER_KEY
     });
   }
-
-  async getClerkClient() {
-    const options = await getClerkOptions(this);
-    return createClerkClient(options);
-  }
-}
-
-export async function getClerkOptions(api: APIContext) {
-  const env = await api.getEnv();
-
-  return {
-    jwtKey: env.CLERK_JWT_KEY,
-    secretKey: env.CLERK_SECRET_KEY,
-    publishableKey: env.CLERK_PUBLISHABLE_KEY
-  };
-}
-
-export async function getClerkSession(api: APIContext) {
-  const options = await getClerkOptions(api);
-  const client = await api.getClerkClient();
-
-  const res = await client.authenticateRequest(api.ctx.req.raw, {
-    ...options
-  });
-
-  if (res.status === 'signed-in') {
-    return res.toAuth();
-  }
-
-  return null;
 }

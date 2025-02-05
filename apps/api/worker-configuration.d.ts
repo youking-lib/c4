@@ -3,9 +3,6 @@
 interface CloudflareBindings {
 	EMAIL_API: "development";
 	SECRET: string;
-	CLERK_SECRET_KEY: string;
-	CLERK_PUBLISHABLE_KEY: string;
-	CLERK_JWT_KEY: string;
 	S3_ACCESS_KEY_ID: string;
 	S3_BUCKET_NAME: string;
 	S3_SECRET_ACCESS_KEY: string;
