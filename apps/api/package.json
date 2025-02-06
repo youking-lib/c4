@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "prisma generate && wrangler dev",
     "prisma": "prisma",
-    "deploy": "wrangler deploy --minify --env=production",
+    "deploy": "wrangler deploy",
     "types": "wrangler types --env-interface CloudflareBindings"
   },
   "keywords": [],
