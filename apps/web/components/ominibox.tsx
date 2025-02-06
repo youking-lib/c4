@@ -56,12 +56,16 @@ function Upload() {
 
   return (
     <div
-      className="w-full h-full bg-zinc-100 flex justify-center items-center flex-col gap-2 cursor-pointer"
+      className="w-full h-full flex justify-center items-center flex-col gap-2 cursor-pointer"
       onClick={() => inputRef.current?.click()}
+      style={{
+        backgroundColor: 'var(--gray-2)',
+        color: 'var(--gray-11)'
+      }}
     >
-      <CloudUploadIcon className="text-neutral-400 size-12" strokeWidth={0.5} />
+      <CloudUploadIcon className="size-12" strokeWidth={0.5} />
 
-      <div className="text-neutral-400">Upload files</div>
+      <div className="">Upload files</div>
 
       <Input
         ref={inputRef}

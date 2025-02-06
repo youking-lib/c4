@@ -1,9 +1,15 @@
-import { Container, Section, Flex } from '@radix-ui/themes';
-import { Button } from '@/components/ui/button';
+'use client';
+
 import Link from 'next/link';
-import { MoonIcon } from 'lucide-react';
+import { useTheme } from 'next-themes';
+import { MoonIcon, SunIcon } from 'lucide-react';
+import { Container, Section, Flex } from '@radix-ui/themes';
+
+import { Button } from '@/components/ui/button';
 
 export function Header() {
+  const { theme = 'light', setTheme } = useTheme();
+
   return (
     <Container>
       <Section size="1">
@@ -26,8 +32,12 @@ export function Header() {
 
           <Flex gap="2" align="center">
             <Button variant="link">Login</Button>
-            <Button variant="ghost" size="icon">
-              <MoonIcon width={16} height={16} />
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            >
+              {theme === 'light' ? <SunIcon /> : <MoonIcon />}
             </Button>
           </Flex>
         </Flex>
