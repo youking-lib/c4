@@ -1,17 +1,17 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useImmer } from 'use-immer';
 import { CloudUploadIcon } from 'lucide-react';
 import { Card, Flex, Heading, Inset, Text } from '@radix-ui/themes';
 
 import { Input } from '@/components/ui/input';
-import { Filelist } from './filelist';
 
+import { Filelist } from './filelist';
 import { RetrieveOTP } from './retrieve-otp';
 
 export function Ominibox() {
   return (
     <Card className="w-full min-h-[600px] flex justify-between">
-      <Flex className="w-1/2" py="6" align="center" justify="center" direction="column" gap="4">
+      <Flex className="w-1/2" py="6">
         <Retrieve />
       </Flex>
       <Inset className="w-1/2" clip="padding-box" side="right">
@@ -27,7 +27,7 @@ function Retrieve() {
   });
 
   return (
-    <>
+    <Flex gap="4" align="center" justify="center" direction="column" className="w-full">
       <Heading>Retrieve your files</Heading>
       <Text mb="8">Enter your file code</Text>
 
@@ -42,7 +42,7 @@ function Retrieve() {
           });
         }}
       />
-    </>
+    </Flex>
   );
 }
 
