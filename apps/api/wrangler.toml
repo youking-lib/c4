@@ -11,7 +11,7 @@ enabled = true
 [[d1_databases]]
 binding = "database"
 database_name = "vsh-express"
-database_id = "d913cfba-0bcd-4823-a149-ecb24e79d52c"
+database_id = "88883940-e9d3-4b65-aa45-2b530c4ff31a"
 
 # Workers Logs
 # Docs: https://developers.cloudflare.com/workers/observability/logs/workers-logs/

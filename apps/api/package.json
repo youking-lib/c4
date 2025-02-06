@@ -1,11 +1,12 @@
 {
-  "name": "api",
+  "name": "vsh-api",
   "private": true,
   "description": "VSH API",
   "main": "index.js",
   "scripts": {
     "dev": "prisma generate && wrangler dev",
     "prisma": "prisma",
+    "deploy": "wrangler deploy --minify --env=production",
     "types": "wrangler types --env-interface CloudflareBindings"
   },
   "keywords": [],
