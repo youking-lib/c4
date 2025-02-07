@@ -1,11 +1,12 @@
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
+import { nanoid } from 'nanoid';
 import { useImmer } from 'use-immer';
 import { CloudUploadIcon } from 'lucide-react';
 import { Card, Flex, Heading, Inset, Text } from '@radix-ui/themes';
 
 import { Input } from '@/components/ui/input';
 
-import { Filelist } from './filelist';
+import { FileItem, Filelist } from './filelist';
 import { RetrieveOTP } from './retrieve-otp';
 
 export function Ominibox() {
@@ -49,7 +50,7 @@ function Retrieve() {
 function Upload() {
   const [state, setState] = useImmer({
     code: '',
-    files: [] as File[]
+    files: [] as FileItem[]
   });
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -75,7 +76,15 @@ function Upload() {
         multiple
         onChange={e => {
           setState(draft => {
-            draft.files = Array.from(e.target.files ?? []);
+            draft.files = Array.from(e.target.files ?? []).map(file => {
+              return {
+                id: nanoid(),
+                name: file.name,
+                size: file.size,
+                type: file.type,
+                file
+              };
+            });
           });
         }}
       />
