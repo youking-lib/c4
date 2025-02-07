@@ -11,7 +11,7 @@ export function Header() {
   const { theme = 'light', setTheme } = useTheme();
 
   return (
-    <Container>
+    <Container className="border-b border-gray-200">
       <Section size="1">
         <Flex align="center" justify="between">
           <Link

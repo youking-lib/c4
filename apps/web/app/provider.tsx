@@ -30,7 +30,7 @@ function RadixTheme({ children }: { children: React.ReactNode }) {
       appearance={theme as 'light' | 'dark'}
       data-is-root-theme="false"
       data-has-background="false"
-      accentColor="purple"
+      accentColor="gray"
       grayColor="mauve"
     >
       {children}
